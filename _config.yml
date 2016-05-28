@@ -6,10 +6,10 @@
 name: Martin Capodici
 
 # Short bio or description (displayed in the header)
-description: Functional Programming Blog
+description: Programming Blog
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+avatar: /images/martin.jpg
 
 #
 # Flags below are optional
