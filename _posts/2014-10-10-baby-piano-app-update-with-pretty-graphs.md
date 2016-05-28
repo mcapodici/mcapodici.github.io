@@ -4,8 +4,6 @@ title: Baby Piano App Update With Pretty Graphs
 date: 2014-10-10 21:39:00
 ---
 
-# Baby Piano App Update With Pretty Graphs
-
 Here is an update on how the Baby Piano app is doing.
 
 I haven't done any work on it the last few weeks, no coding or promotion. A few weeks ago I signed up to Pinterest to do a bit of light promotion there, but nothing since then.
@@ -16,15 +14,15 @@ Interestingly the ratings were bad, but the Google Algorithm probably says any r
 
 Despite this, the  keyword ranking trend is positive, and this continued trend could get me into the top 5, perhaps with a bit more promotion. Once I am in the top 5 downloads and ad revenue should accelerate dramatically. I hope!
 
-[![Foo](/images/posts/2014-10-10/sensortower_tn.png)](images/posts/2014-10-10/sensortower_full.png)
+[![Foo](/images/posts/2014-10-10/sensortower_tn.png)](/images/posts/2014-10-10/sensortower_full.png)
 
 Total downloads and current installs are on this graph:
 
-[![Foo](/images/posts/2014-10-10/currentinstalls_tn.png)](images/posts/2014-10-10/currentinstalls_full.png)
+[![Foo](/images/posts/2014-10-10/currentinstalls_tn.png)](/images/posts/2014-10-10/currentinstalls_full.png)
 
 And here is the revenue so far from ad clicks.
 
-[![Foo](/images/posts/2014-10-10/rev_tn.png)](images/posts/2014-10-10/rev_full.png)
+[![Foo](/images/posts/2014-10-10/rev_tn.png)](/images/posts/2014-10-10/rev_full.png)
 
 It is a tiny amount of money obviously, but getting to even 10000 downloads which is small in the app world would make the money a bit more interesting - because if I get enough apps created that can get 10000 downloads it is possible to produce enough money to recycle back into development and promotion and have a nice positive-reinforcing cycle.
 
