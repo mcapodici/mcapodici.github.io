@@ -2,6 +2,7 @@
 layout: post
 title: Baby Piano App Update With Pretty Graphs
 date: 2014-10-10 21:39:00
+tags: [android-apps]
 ---
 
 Here is an update on how the Baby Piano app is doing.
