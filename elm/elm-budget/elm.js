@@ -13253,6 +13253,10 @@ var _elm_lang$elm_architecture_tutorial$Persistence_Interface$UserPersister = F2
 	function (a, b) {
 		return {saveUser: a, loginUser: b};
 	});
+var _elm_lang$elm_architecture_tutorial$Persistence_Interface$UserEmailNotVerified = {ctor: 'UserEmailNotVerified'};
+var _elm_lang$elm_architecture_tutorial$Persistence_Interface$LoginGeneralErrorMessage = function (a) {
+	return {ctor: 'LoginGeneralErrorMessage', _0: a};
+};
 
 var _elm_lang$elm_architecture_tutorial$PersistableData$Transaction = F7(
 	function (a, b, c, d, e, f, g) {
@@ -13417,11 +13421,24 @@ var _elm_lang$elm_architecture_tutorial$Helper_Decoder$dropBadDecoder = function
 			_elm_lang$core$Json_Decode$maybe(decoder)));
 };
 
+var _elm_lang$elm_architecture_tutorial$Helper_Core$shuffle = F2(
+	function (l1, l2) {
+		var _p0 = l1;
+		if (_p0.ctor === '[]') {
+			return l2;
+		} else {
+			return {
+				ctor: '::',
+				_0: _p0._0,
+				_1: A2(_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle, l2, _p0._1)
+			};
+		}
+	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$delay = F2(
 	function (time, msg) {
 		return A2(
 			_elm_lang$core$Task$perform,
-			function (_p0) {
+			function (_p1) {
 				return msg;
 			},
 			_elm_lang$core$Process$sleep(time));
@@ -13429,12 +13446,12 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$delay = F2(
 var _elm_lang$elm_architecture_tutorial$Helper_Core$withIndexes = function () {
 	var withIndexesR = F2(
 		function (idx, list) {
-			var _p1 = list;
-			if (_p1.ctor === '::') {
+			var _p2 = list;
+			if (_p2.ctor === '::') {
 				return {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: idx, _1: _p1._0},
-					_1: A2(withIndexesR, idx + 1, _p1._1)
+					_0: {ctor: '_Tuple2', _0: idx, _1: _p2._0},
+					_1: A2(withIndexesR, idx + 1, _p2._1)
 				};
 			} else {
 				return {ctor: '[]'};
@@ -13462,31 +13479,31 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$lookupWithDefault = F5(
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth = F3(
 	function (fromError, fromOK, result) {
-		var _p2 = result;
-		if (_p2.ctor === 'Err') {
-			return fromError(_p2._0);
+		var _p3 = result;
+		if (_p3.ctor === 'Err') {
+			return fromError(_p3._0);
 		} else {
-			return fromOK(_p2._0);
+			return fromOK(_p3._0);
 		}
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$isErr = function (v) {
-	var _p3 = v;
-	if (_p3.ctor === 'Err') {
+	var _p4 = v;
+	if (_p4.ctor === 'Err') {
 		return true;
 	} else {
 		return false;
 	}
 };
 var _elm_lang$elm_architecture_tutorial$Helper_Core$isNothing = function (v) {
-	var _p4 = v;
-	if (_p4.ctor === 'Nothing') {
+	var _p5 = v;
+	if (_p5.ctor === 'Nothing') {
 		return true;
 	} else {
 		return false;
 	}
 };
-var _elm_lang$elm_architecture_tutorial$Helper_Core$isJust = function (_p5) {
-	return !_elm_lang$elm_architecture_tutorial$Helper_Core$isNothing(_p5);
+var _elm_lang$elm_architecture_tutorial$Helper_Core$isJust = function (_p6) {
+	return !_elm_lang$elm_architecture_tutorial$Helper_Core$isNothing(_p6);
 };
 var _elm_lang$elm_architecture_tutorial$Helper_Core$roundFloat2dp = function (f) {
 	return _elm_lang$core$Basics$toFloat(
@@ -13500,7 +13517,6 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$functionOrDefault = F3(
 			A2(_elm_lang$core$Maybe$map, fn, original));
 	});
 
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$decodeErrorMessage = A2(_elm_lang$core$Json_Decode$field, 'error', _elm_lang$core$Json_Decode$string);
 var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$trailingSlash = function (url) {
 	return A2(_elm_lang$core$String$endsWith, '/', url) ? url : A2(_elm_lang$core$Basics_ops['++'], url, '/');
 };
@@ -13704,48 +13720,9 @@ var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$LoginData = F2(
 var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$LoginSuccessResult = function (a) {
 	return {sessionToken: a};
 };
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$loginUser = F2(
-	function (credentials, login) {
-		var decodeLoginSuccessResult = A2(
-			_elm_lang$core$Json_Decode$map,
-			_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$LoginSuccessResult,
-			A2(_elm_lang$core$Json_Decode$field, 'sessionToken', _elm_lang$core$Json_Decode$string));
-		var queryString = A3(
-			_Bogdanp$elm_querystring$QueryString$add,
-			'password',
-			login.password,
-			A3(_Bogdanp$elm_querystring$QueryString$add, 'username', login.username, _Bogdanp$elm_querystring$QueryString$empty));
-		return A2(
-			_elm_lang$core$Task$mapError,
-			function (err) {
-				return {ctor: '_Tuple0'};
-			},
-			_elm_lang$http$Http$toTask(
-				_elm_lang$http$Http$request(
-					{
-						method: 'GET',
-						headers: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$headers(
-							{credentials: credentials, maybeSession: _elm_lang$core$Maybe$Nothing}),
-						expect: _elm_lang$http$Http$expectJson(decodeLoginSuccessResult),
-						url: A2(
-							_elm_lang$core$Basics_ops['++'],
-							A2(
-								_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$pathURL,
-								credentials.url,
-								{
-									ctor: '::',
-									_0: 'login',
-									_1: {ctor: '[]'}
-								}),
-							_Bogdanp$elm_querystring$QueryString$render(queryString)),
-						timeout: _elm_lang$core$Maybe$Nothing,
-						withCredentials: false,
-						body: _elm_lang$http$Http$emptyBody
-					})));
-	});
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseSdk = F7(
-	function (a, b, c, d, e, f, g) {
-		return {create: a, query: b, get: c, update: d, $delete: e, createUser: f, loginUser: g};
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseSdk = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {create: a, query: b, get: c, update: d, $delete: e, createUser: f, loginUser: g, logoutUser: h};
 	});
 var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$Credentials = F3(
 	function (a, b, c) {
@@ -13845,14 +13822,32 @@ var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$Options = F6(
 	function (a, b, c, d, e, f) {
 		return {order: a, limit: b, skip: c, keys: d, include: e, count: f};
 	});
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$CreateUserHttpError = function (a) {
-	return {ctor: 'CreateUserHttpError', _0: a};
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseErrorHttpError = function (a) {
+	return {ctor: 'ParseErrorHttpError', _0: a};
 };
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$CreateUserErrorMessage = function (a) {
-	return {ctor: 'CreateUserErrorMessage', _0: a};
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ErrorResponse = function (a) {
+	return {ctor: 'ErrorResponse', _0: a};
 };
-var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$createUser = F2(
-	function (credentials, value) {
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$decodeErrorMessage = A3(
+	_elm_lang$core$Json_Decode$map2,
+	F2(
+		function (code, error) {
+			return _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ErrorResponse(
+				{code: code, error: error});
+		}),
+	A2(_elm_lang$core$Json_Decode$field, 'code', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode$field, 'error', _elm_lang$core$Json_Decode$string));
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$loginUser = F2(
+	function (credentials, login) {
+		var decodeLoginSuccessResult = A2(
+			_elm_lang$core$Json_Decode$map,
+			_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$LoginSuccessResult,
+			A2(_elm_lang$core$Json_Decode$field, 'sessionToken', _elm_lang$core$Json_Decode$string));
+		var queryString = A3(
+			_Bogdanp$elm_querystring$QueryString$add,
+			'password',
+			login.password,
+			A3(_Bogdanp$elm_querystring$QueryString$add, 'username', login.username, _Bogdanp$elm_querystring$QueryString$empty));
 		return A2(
 			_elm_lang$core$Task$mapError,
 			function (err) {
@@ -13861,11 +13856,51 @@ var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$createUser = F2(
 					return A3(
 						_elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth,
 						_elm_lang$core$Basics$always(
-							_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$CreateUserHttpError(err)),
-						_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$CreateUserErrorMessage,
+							_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseErrorHttpError(err)),
+						_elm_lang$core$Basics$identity,
 						A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$decodeErrorMessage, _p4._0.body));
 				} else {
-					return _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$CreateUserHttpError(err);
+					return _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseErrorHttpError(err);
+				}
+			},
+			_elm_lang$http$Http$toTask(
+				_elm_lang$http$Http$request(
+					{
+						method: 'GET',
+						headers: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$headers(
+							{credentials: credentials, maybeSession: _elm_lang$core$Maybe$Nothing}),
+						expect: _elm_lang$http$Http$expectJson(decodeLoginSuccessResult),
+						url: A2(
+							_elm_lang$core$Basics_ops['++'],
+							A2(
+								_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$pathURL,
+								credentials.url,
+								{
+									ctor: '::',
+									_0: 'login',
+									_1: {ctor: '[]'}
+								}),
+							_Bogdanp$elm_querystring$QueryString$render(queryString)),
+						timeout: _elm_lang$core$Maybe$Nothing,
+						withCredentials: false,
+						body: _elm_lang$http$Http$emptyBody
+					})));
+	});
+var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$createUser = F2(
+	function (credentials, value) {
+		return A2(
+			_elm_lang$core$Task$mapError,
+			function (err) {
+				var _p5 = err;
+				if (_p5.ctor === 'BadStatus') {
+					return A3(
+						_elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth,
+						_elm_lang$core$Basics$always(
+							_elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseErrorHttpError(err)),
+						_elm_lang$core$Basics$identity,
+						A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$decodeErrorMessage, _p5._0.body));
+				} else {
+					return _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$ParseErrorHttpError(err);
 				}
 			},
 			_elm_lang$http$Http$toTask(
@@ -13899,10 +13934,43 @@ var _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$init = function 
 		update: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$update(requestBase),
 		$delete: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$delete(requestBase),
 		createUser: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$createUser(requestBase.credentials),
-		loginUser: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$loginUser(requestBase.credentials)
+		loginUser: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$loginUser(requestBase.credentials),
+		logoutUser: _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$logoutUser(requestBase)
 	};
 };
 
+var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$logoutUser = F2(
+	function (creds, sessionToken) {
+		var sdk = _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$init(
+			{
+				credentials: creds,
+				maybeSession: _elm_lang$core$Maybe$Just(sessionToken)
+			});
+		return sdk.logoutUser;
+	});
+var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper = function (err) {
+	var logger = A2(
+		_elm_lang$core$Debug$log,
+		'application',
+		_elm_lang$core$Basics$toString(err));
+	return 'An error occurred communicating with the server. Please check your internet connection.';
+};
+var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$save = F3(
+	function (credentials, persister, object) {
+		var sdk = _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$init(credentials);
+		return A2(
+			_elm_lang$core$Task$mapError,
+			_elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper,
+			A2(
+				_elm_lang$core$Task$map,
+				function (result) {
+					return result.objectId;
+				},
+				A2(
+					sdk.create,
+					persister.className,
+					persister.encode(object))));
+	});
 var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$loginUser = F2(
 	function (credentials, login) {
 		var encode = function (l) {
@@ -13930,7 +13998,14 @@ var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$loginUser = F2(
 		return A2(
 			_elm_lang$core$Task$mapError,
 			function (err) {
-				return '';
+				var _p0 = err;
+				if (_p0.ctor === 'ErrorResponse') {
+					var _p1 = _p0._0;
+					return (_elm_lang$core$Native_Utils.eq(_p1.code, 205) && _elm_lang$core$Native_Utils.eq(_p1.error, 'User email is not verified.')) ? _elm_lang$elm_architecture_tutorial$Persistence_Interface$UserEmailNotVerified : _elm_lang$elm_architecture_tutorial$Persistence_Interface$LoginGeneralErrorMessage(_p1.error);
+				} else {
+					return _elm_lang$elm_architecture_tutorial$Persistence_Interface$LoginGeneralErrorMessage(
+						_elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper(_p0._0));
+				}
 			},
 			A2(
 				_elm_lang$core$Task$map,
@@ -13938,29 +14013,6 @@ var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$loginUser = F2(
 					return result.sessionToken;
 				},
 				sdk.loginUser(login)));
-	});
-var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper = function (err) {
-	var logger = A2(
-		_elm_lang$core$Debug$log,
-		'application',
-		_elm_lang$core$Basics$toString(err));
-	return 'An error occurred communicating with the server. Please check your internet connection.';
-};
-var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$save = F3(
-	function (credentials, persister, object) {
-		var sdk = _elm_lang$elm_architecture_tutorial$Backend_ParseBaaSClient$init(credentials);
-		return A2(
-			_elm_lang$core$Task$mapError,
-			_elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper,
-			A2(
-				_elm_lang$core$Task$map,
-				function (result) {
-					return result.objectId;
-				},
-				A2(
-					sdk.create,
-					persister.className,
-					persister.encode(object))));
 	});
 var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$saveUser = F2(
 	function (credentials, user) {
@@ -13989,11 +14041,11 @@ var _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$saveUser = F2(
 		return A2(
 			_elm_lang$core$Task$mapError,
 			function (err) {
-				var _p0 = err;
-				if (_p0.ctor === 'CreateUserErrorMessage') {
-					return _p0._0;
+				var _p2 = err;
+				if (_p2.ctor === 'ErrorResponse') {
+					return _p2._0.error;
 				} else {
-					return _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper(_p0._0);
+					return _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$httpErrorMapper(_p2._0);
 				}
 			},
 			A2(
@@ -14183,6 +14235,7 @@ var _elm_lang$elm_architecture_tutorial$Persistence_Data$accountPersister = {
 };
 
 var _elm_lang$elm_architecture_tutorial$ProgramData$credentials = {appId: '00c5fcfe-a699-4673-9801-ea79dd4d6a05', apiKey: 'H0eoFKs2ZvxhvUtw87TFJurckvBy0IWv', url: 'https://parse.buddy.com/parse'};
+var _elm_lang$elm_architecture_tutorial$ProgramData$getLogout = _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$logoutUser;
 var _elm_lang$elm_architecture_tutorial$ProgramData$getUserPersister = _elm_lang$elm_architecture_tutorial$Persistence_ParseBaaS$userPersister;
 var _elm_lang$elm_architecture_tutorial$ProgramData$getPersisters = F2(
 	function (credentials, sessionToken) {
@@ -26815,7 +26868,138 @@ var _elm_lang$elm_architecture_tutorial$User$UserData = F2(
 	function (a, b) {
 		return {sessionToken: a, username: b};
 	});
+var _elm_lang$elm_architecture_tutorial$User$decoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_elm_lang$elm_architecture_tutorial$User$UserData,
+	A2(_elm_lang$core$Json_Decode$field, 'sessionToken', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string));
 
+var _elm_lang$window$Native_Window = function()
+{
+
+var size = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)	{
+	callback(_elm_lang$core$Native_Scheduler.succeed({
+		width: window.innerWidth,
+		height: window.innerHeight
+	}));
+});
+
+return {
+	size: size
+};
+
+}();
+var _elm_lang$window$Window_ops = _elm_lang$window$Window_ops || {};
+_elm_lang$window$Window_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p0) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$window$Window$onSelfMsg = F3(
+	function (router, dimensions, state) {
+		var _p1 = state;
+		if (_p1.ctor === 'Nothing') {
+			return _elm_lang$core$Task$succeed(state);
+		} else {
+			var send = function (_p2) {
+				var _p3 = _p2;
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					_p3._0(dimensions));
+			};
+			return A2(
+				_elm_lang$window$Window_ops['&>'],
+				_elm_lang$core$Task$sequence(
+					A2(_elm_lang$core$List$map, send, _p1._0.subs)),
+				_elm_lang$core$Task$succeed(state));
+		}
+	});
+var _elm_lang$window$Window$init = _elm_lang$core$Task$succeed(_elm_lang$core$Maybe$Nothing);
+var _elm_lang$window$Window$size = _elm_lang$window$Native_Window.size;
+var _elm_lang$window$Window$width = A2(
+	_elm_lang$core$Task$map,
+	function (_) {
+		return _.width;
+	},
+	_elm_lang$window$Window$size);
+var _elm_lang$window$Window$height = A2(
+	_elm_lang$core$Task$map,
+	function (_) {
+		return _.height;
+	},
+	_elm_lang$window$Window$size);
+var _elm_lang$window$Window$onEffects = F3(
+	function (router, newSubs, oldState) {
+		var _p4 = {ctor: '_Tuple2', _0: oldState, _1: newSubs};
+		if (_p4._0.ctor === 'Nothing') {
+			if (_p4._1.ctor === '[]') {
+				return _elm_lang$core$Task$succeed(_elm_lang$core$Maybe$Nothing);
+			} else {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (pid) {
+						return _elm_lang$core$Task$succeed(
+							_elm_lang$core$Maybe$Just(
+								{subs: newSubs, pid: pid}));
+					},
+					_elm_lang$core$Process$spawn(
+						A3(
+							_elm_lang$dom$Dom_LowLevel$onWindow,
+							'resize',
+							_elm_lang$core$Json_Decode$succeed(
+								{ctor: '_Tuple0'}),
+							function (_p5) {
+								return A2(
+									_elm_lang$core$Task$andThen,
+									_elm_lang$core$Platform$sendToSelf(router),
+									_elm_lang$window$Window$size);
+							})));
+			}
+		} else {
+			if (_p4._1.ctor === '[]') {
+				return A2(
+					_elm_lang$window$Window_ops['&>'],
+					_elm_lang$core$Process$kill(_p4._0._0.pid),
+					_elm_lang$core$Task$succeed(_elm_lang$core$Maybe$Nothing));
+			} else {
+				return _elm_lang$core$Task$succeed(
+					_elm_lang$core$Maybe$Just(
+						{subs: newSubs, pid: _p4._0._0.pid}));
+			}
+		}
+	});
+var _elm_lang$window$Window$subscription = _elm_lang$core$Native_Platform.leaf('Window');
+var _elm_lang$window$Window$Size = F2(
+	function (a, b) {
+		return {width: a, height: b};
+	});
+var _elm_lang$window$Window$MySub = function (a) {
+	return {ctor: 'MySub', _0: a};
+};
+var _elm_lang$window$Window$resizes = function (tagger) {
+	return _elm_lang$window$Window$subscription(
+		_elm_lang$window$Window$MySub(tagger));
+};
+var _elm_lang$window$Window$subMap = F2(
+	function (func, _p6) {
+		var _p7 = _p6;
+		return _elm_lang$window$Window$MySub(
+			function (_p8) {
+				return func(
+					_p7._0(_p8));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Window'] = {pkg: 'elm-lang/window', init: _elm_lang$window$Window$init, onEffects: _elm_lang$window$Window$onEffects, onSelfMsg: _elm_lang$window$Window$onSelfMsg, tag: 'sub', subMap: _elm_lang$window$Window$subMap};
+
+var _elm_lang$elm_architecture_tutorial$Message$SizeUpdate = function (a) {
+	return {ctor: 'SizeUpdate', _0: a};
+};
+var _elm_lang$elm_architecture_tutorial$Message$Logout = {ctor: 'Logout'};
 var _elm_lang$elm_architecture_tutorial$Message$SetUserFromLocalStorage = function (a) {
 	return {ctor: 'SetUserFromLocalStorage', _0: a};
 };
@@ -27125,6 +27309,32 @@ var _elm_lang$elm_architecture_tutorial$Accounts_Update$update = F5(
 		}
 	});
 
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer = F3(
+	function (cls, attributes, content) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(cls),
+				_1: attributes
+			},
+			content);
+	});
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$container = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('container');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('row');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col1 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('one column');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col2 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('two columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col3 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('three columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col4 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('four columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col5 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('five columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col6 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('six columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col7 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('seven columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col8 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('eight columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col9 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('nine columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col10 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('ten columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col11 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('eleven columns');
+var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('twelve columns');
+
 var _elm_lang$elm_architecture_tutorial$Helper_Html$focus = F2(
 	function (id, noop) {
 		return A2(
@@ -27155,30 +27365,46 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$textHtml = function (t) {
 		},
 		{ctor: '[]'});
 };
-var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
-	function (className, scheme, editRowMaybe, datums) {
+var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F5(
+	function (viewPort, className, scheme, editRowMaybe, datums) {
+		var trish = function () {
+			var _p0 = viewPort;
+			if (_p0.ctor === 'Desktop') {
+				return _elm_lang$html$Html$tr;
+			} else {
+				return _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row;
+			}
+		}();
+		var tdish = function () {
+			var _p1 = viewPort;
+			if (_p1.ctor === 'Desktop') {
+				return _elm_lang$html$Html$td;
+			} else {
+				return _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12;
+			}
+		}();
 		var rows = function () {
-			var cellWrap = function (_p0) {
-				var _p1 = _p0;
+			var cellWrap = function (_p2) {
+				var _p3 = _p2;
 				return A2(
-					_elm_lang$html$Html$td,
-					_p1._1,
+					tdish,
+					_p3._1,
 					{
 						ctor: '::',
-						_0: _p1._0,
+						_0: _p3._0,
 						_1: {ctor: '[]'}
 					});
 			};
 			var wrapedEditableRowCells = function () {
-				var _p2 = editRowMaybe;
-				if (_p2.ctor === 'Just') {
-					var _p3 = _p2._0;
+				var _p4 = editRowMaybe;
+				if (_p4.ctor === 'Just') {
+					var _p5 = _p4._0;
 					return A2(
 						_elm_lang$core$List$map,
 						cellWrap,
 						A2(
 							_elm_lang$core$Basics_ops['++'],
-							scheme.getEditableRowCells(_p3),
+							scheme.getEditableRowCells(_p5),
 							{
 								ctor: '::',
 								_0: {
@@ -27210,7 +27436,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
 														{
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onClick(
-																scheme.saveMessage(_p3)),
+																scheme.saveMessage(_p5)),
 															_1: {ctor: '[]'}
 														},
 														{
@@ -27231,75 +27457,114 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
 				}
 			}();
 			var rows = A2(
-				_elm_lang$core$List$map,
-				function (datum) {
-					return A2(
-						_elm_lang$html$Html$tr,
-						{ctor: '[]'},
-						A2(
-							_elm_lang$core$Maybe$withDefault,
-							false,
+				_elm_lang$core$List$intersperse,
+				function () {
+					var _p6 = viewPort;
+					if (_p6.ctor === 'Desktop') {
+						return _elm_lang$html$Html$text('');
+					} else {
+						return A2(
+							_elm_lang$html$Html$hr,
+							{ctor: '[]'},
+							{ctor: '[]'});
+					}
+				}(),
+				A2(
+					_elm_lang$core$List$map,
+					function (datum) {
+						return A2(
+							trish,
+							{ctor: '[]'},
 							A2(
-								_elm_lang$core$Maybe$map,
-								function (editRow) {
-									return A2(scheme.isRowForEdit, datum, editRow);
-								},
-								editRowMaybe)) ? wrapedEditableRowCells : A2(
-							_elm_lang$core$List$map,
-							cellWrap,
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								scheme.getReadOnlyRowCells(datum),
-								{
-									ctor: '::',
-									_0: {
-										ctor: '_Tuple2',
-										_0: scheme.canEditDelete(datum) ? A2(
-											_elm_lang$html$Html$div,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$button,
+								_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle,
+								function () {
+									var _p7 = viewPort;
+									if (_p7.ctor === 'Desktop') {
+										return {ctor: '[]'};
+									} else {
+										return A2(
+											_elm_lang$core$List$map,
+											function (s) {
+												return A2(
+													trish,
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onClick(
-															scheme.editMessage(datum)),
+														_0: _elm_lang$html$Html_Attributes$class('mobile-label'),
 														_1: {ctor: '[]'}
 													},
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html$text('Edit'),
+														_0: _elm_lang$html$Html$text(s),
 														_1: {ctor: '[]'}
-													}),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html$text(' '),
-													_1: {
+													});
+											},
+											scheme.headerLabels);
+									}
+								}(),
+								A2(
+									_elm_lang$core$Maybe$withDefault,
+									false,
+									A2(
+										_elm_lang$core$Maybe$map,
+										function (editRow) {
+											return A2(scheme.isRowForEdit, datum, editRow);
+										},
+										editRowMaybe)) ? wrapedEditableRowCells : A2(
+									_elm_lang$core$List$map,
+									cellWrap,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										scheme.getReadOnlyRowCells(datum),
+										{
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: scheme.canEditDelete(datum) ? A2(
+													_elm_lang$html$Html$div,
+													{ctor: '[]'},
+													{
 														ctor: '::',
 														_0: A2(
 															_elm_lang$html$Html$button,
 															{
 																ctor: '::',
 																_0: _elm_lang$html$Html_Events$onClick(
-																	scheme.deleteMessage(datum)),
+																	scheme.editMessage(datum)),
 																_1: {ctor: '[]'}
 															},
 															{
 																ctor: '::',
-																_0: _elm_lang$html$Html$text('Delete'),
+																_0: _elm_lang$html$Html$text('Edit'),
 																_1: {ctor: '[]'}
 															}),
-														_1: {ctor: '[]'}
-													}
-												}
-											}) : _elm_lang$html$Html$text('Saving...'),
-										_1: {ctor: '[]'}
-									},
-									_1: {ctor: '[]'}
-								})));
-				},
-				datums);
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(' '),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$button,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onClick(
+																			scheme.deleteMessage(datum)),
+																		_1: {ctor: '[]'}
+																	},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('Delete'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															}
+														}
+													}) : _elm_lang$html$Html$text('Saving...'),
+												_1: {ctor: '[]'}
+											},
+											_1: {ctor: '[]'}
+										}))));
+					},
+					datums));
 			return A2(
 				_elm_lang$core$Maybe$withDefault,
 				false,
@@ -27314,7 +27579,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
 				{
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$tr,
+						trish,
 						{ctor: '[]'},
 						wrapedEditableRowCells),
 					_1: {ctor: '[]'}
@@ -27323,7 +27588,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
 				rows,
 				{ctor: '[]'});
 		}();
-		var headerItems = A2(
+		var desktopHeaderItems = A2(
 			_elm_lang$core$List$map,
 			function (cell) {
 				return A2(
@@ -27336,36 +27601,65 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateTable = F4(
 					});
 			},
 			A2(
-				_elm_lang$core$Basics_ops['++'],
-				scheme.headerRowCells,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(''),
-					_1: {ctor: '[]'}
-				}));
-		return A2(
-			_elm_lang$html$Html$table,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class(
-					A2(_elm_lang$core$Basics_ops['++'], className, ' edit-table')),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$thead,
-					{ctor: '[]'},
+				_elm_lang$core$List$map,
+				_elm_lang$html$Html$text,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					scheme.headerLabels,
 					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$tr,
-							{ctor: '[]'},
-							headerItems),
+						_0: '',
 						_1: {ctor: '[]'}
-					}),
-				_1: rows
-			});
+					})));
+		return function () {
+			var _p8 = viewPort;
+			if (_p8.ctor === 'Desktop') {
+				return _elm_lang$html$Html$table(
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$classList(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: className, _1: true},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'edit-table', _1: true},
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return _elm_lang$html$Html$div(
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class(className),
+						_1: {ctor: '[]'}
+					});
+			}
+		}()(
+			function () {
+				var _p9 = viewPort;
+				if (_p9.ctor === 'Desktop') {
+					return {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$thead,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$tr,
+									{ctor: '[]'},
+									desktopHeaderItems),
+								_1: {ctor: '[]'}
+							}),
+						_1: rows
+					};
+				} else {
+					return rows;
+				}
+			}());
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$onChange = function (handler) {
 	return A2(
@@ -27391,8 +27685,8 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$navi = F5(
 	function (className, selectedItem, createUrlForItem, createTextForItem, items) {
 		var menuEntry = F2(
 			function (item, menuText) {
-				var _p4 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
-				if (_p4 === true) {
+				var _p10 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
+				if (_p10 === true) {
 					return A2(
 						_elm_lang$html$Html$div,
 						{
@@ -27459,7 +27753,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableTableContentScheme =
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {getReadOnlyRowCells: a, getEditableRowCells: b, editMessage: c, saveMessage: d, canEditDelete: e, cancelMessage: f, deleteMessage: g, isRowForEdit: h, headerRowCells: i, isCreatingNewRow: j};
+										return {getReadOnlyRowCells: a, getEditableRowCells: b, editMessage: c, saveMessage: d, canEditDelete: e, cancelMessage: f, deleteMessage: g, isRowForEdit: h, headerLabels: i, isCreatingNewRow: j};
 									};
 								};
 							};
@@ -27470,6 +27764,8 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableTableContentScheme =
 		};
 	};
 };
+var _elm_lang$elm_architecture_tutorial$Helper_Html$Desktop = {ctor: 'Desktop'};
+var _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile = {ctor: 'Mobile'};
 
 var _elm_lang$elm_architecture_tutorial$Accounts_View$columnIds = {name: 'AccountName'};
 var _elm_lang$elm_architecture_tutorial$Accounts_View$deleteModal = function (storedKey) {
@@ -27628,23 +27924,23 @@ var _elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme = {
 	deleteMessage: function (acc) {
 		return A2(_elm_lang$elm_architecture_tutorial$Accounts_Message$DeleteAccount, acc.storedKey, false);
 	},
-	headerRowCells: {
+	headerLabels: {
 		ctor: '::',
-		_0: _elm_lang$html$Html$text('Account Name'),
+		_0: 'Account Name',
 		_1: {ctor: '[]'}
 	},
 	canEditDelete: function (acc) {
 		return !_elm_lang$core$Native_Utils.eq(acc.storedKey, '');
 	}
 };
-var _elm_lang$elm_architecture_tutorial$Accounts_View$view = F2(
-	function (model, accounts) {
+var _elm_lang$elm_architecture_tutorial$Accounts_View$view = F3(
+	function (viewPort, model, accounts) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A4(_elm_lang$elm_architecture_tutorial$Helper_Html$generateTable, 'accounts', _elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme, model.editingAccountRow, accounts),
+				_0: A5(_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort, viewPort, 'accounts', _elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme, model.editingAccountRow, accounts),
 				_1: {
 					ctor: '::',
 					_0: A2(
@@ -27990,23 +28286,23 @@ var _elm_lang$elm_architecture_tutorial$Categories_View$contentScheme = {
 	deleteMessage: function (acc) {
 		return A2(_elm_lang$elm_architecture_tutorial$Categories_Message$DeleteCategory, acc.storedKey, false);
 	},
-	headerRowCells: {
+	headerLabels: {
 		ctor: '::',
-		_0: _elm_lang$html$Html$text('Category Name'),
+		_0: 'Category Name',
 		_1: {ctor: '[]'}
 	},
 	canEditDelete: function (acc) {
 		return !_elm_lang$core$Native_Utils.eq(acc.storedKey, '');
 	}
 };
-var _elm_lang$elm_architecture_tutorial$Categories_View$view = F2(
-	function (model, categories) {
+var _elm_lang$elm_architecture_tutorial$Categories_View$view = F3(
+	function (viewPort, model, categories) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A4(_elm_lang$elm_architecture_tutorial$Helper_Html$generateTable, 'categories', _elm_lang$elm_architecture_tutorial$Categories_View$contentScheme, model.editingCategoryRow, categories),
+				_0: A5(_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort, viewPort, 'categories', _elm_lang$elm_architecture_tutorial$Categories_View$contentScheme, model.editingCategoryRow, categories),
 				_1: {
 					ctor: '::',
 					_0: A2(
@@ -28050,33 +28346,7 @@ var _elm_lang$elm_architecture_tutorial$DatePicker_Settings$settings = _elm_lang
 
 var _elm_lang$elm_architecture_tutorial$Helper_Regex$email = _elm_lang$core$Regex$regex('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
 
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer = F3(
-	function (cls, attributes, content) {
-		return A2(
-			_elm_lang$html$Html$div,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class(cls),
-				_1: attributes
-			},
-			content);
-	});
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$container = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('container');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('row');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col1 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('one column');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col2 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('two columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col3 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('three columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col4 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('four columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col5 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('five columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col6 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('six columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col7 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('seven columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col8 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('eight columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col9 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('nine columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col10 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('ten columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col11 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('eleven columns');
-var _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12 = _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$classer('twelve columns');
-
-var _elm_lang$elm_architecture_tutorial$Login_Model$initialModel = {email: '', password: '', showValidationErrors: true};
+var _elm_lang$elm_architecture_tutorial$Login_Model$initialModel = {email: '', password: '', showValidationErrors: false};
 var _elm_lang$elm_architecture_tutorial$Login_Model$LoginPageModel = F3(
 	function (a, b, c) {
 		return {email: a, password: b, showValidationErrors: c};
@@ -28278,17 +28548,17 @@ var _elm_lang$elm_architecture_tutorial$Login_View$view = function (model) {
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onInput(_elm_lang$elm_architecture_tutorial$Login_Message$EmailChange),
-															_1: {ctor: '[]'}
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$value(model.email),
+																_1: {ctor: '[]'}
+															}
 														}
 													}
 												}
 											}
 										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(model.email),
-											_1: {ctor: '[]'}
-										}),
+										{ctor: '[]'}),
 									_1: {
 										ctor: '::',
 										_0: validationMessageBox(validationResult.emailInvalidMessage),
@@ -28347,17 +28617,17 @@ var _elm_lang$elm_architecture_tutorial$Login_View$view = function (model) {
 															_1: {
 																ctor: '::',
 																_0: _elm_lang$html$Html_Events$onInput(_elm_lang$elm_architecture_tutorial$Login_Message$PasswordChange),
-																_1: {ctor: '[]'}
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$value(model.password),
+																	_1: {ctor: '[]'}
+																}
 															}
 														}
 													}
 												}
 											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text(model.password),
-												_1: {ctor: '[]'}
-											}),
+											{ctor: '[]'}),
 										_1: {
 											ctor: '::',
 											_0: validationMessageBox(validationResult.passwordInvalidMessage),
@@ -28392,7 +28662,7 @@ var _elm_lang$elm_architecture_tutorial$Login_View$view = function (model) {
 		});
 };
 
-var _elm_lang$elm_architecture_tutorial$Signup_Model$initialModel = {email: '', password: '', showValidationErrors: true};
+var _elm_lang$elm_architecture_tutorial$Signup_Model$initialModel = {email: '', password: '', showValidationErrors: false};
 var _elm_lang$elm_architecture_tutorial$Signup_Model$SignupPageModel = F3(
 	function (a, b, c) {
 		return {email: a, password: b, showValidationErrors: c};
@@ -28418,7 +28688,9 @@ var _elm_lang$elm_architecture_tutorial$Model$Model = function (a) {
 													return function (n) {
 														return function (o) {
 															return function (p) {
-																return {txns: a, accounts: b, categories: c, page: d, accountPageModel: e, categoryPageModel: f, transactionsPageModel: g, signupPageModel: h, loginPageModel: i, alerts: j, lostConnection: k, popupMessage: l, whatsLoaded: m, loadingModal: n, today: o, userData: p};
+																return function (q) {
+																	return {txns: a, accounts: b, categories: c, page: d, accountPageModel: e, categoryPageModel: f, transactionsPageModel: g, signupPageModel: h, loginPageModel: i, alerts: j, lostConnection: k, popupMessage: l, whatsLoaded: m, loadingModal: n, today: o, userData: p, windowSize: q};
+																};
 															};
 														};
 													};
@@ -30754,14 +31026,6 @@ var _elm_lang$elm_architecture_tutorial$Signup_Update$update = F2(
 		}
 	});
 
-var _elm_lang$elm_architecture_tutorial$Ports$onUserChange = function (x) {
-	return _elm_lang$core$Platform_Sub$none;
-};
-var _elm_lang$elm_architecture_tutorial$Ports$decoder = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_elm_lang$elm_architecture_tutorial$User$UserData,
-	A2(_elm_lang$core$Json_Decode$field, 'sessionToken', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'username', _elm_lang$core$Json_Decode$string));
 var _elm_lang$elm_architecture_tutorial$Ports$storeSessionRaw = _elm_lang$core$Native_Platform.outgoingPort(
 	'storeSessionRaw',
 	function (v) {
@@ -30797,6 +31061,21 @@ var _elm_lang$elm_architecture_tutorial$Ports$storeUser = function (maybeValue) 
 			maybeValue));
 };
 var _elm_lang$elm_architecture_tutorial$Ports$onUserChangeRaw = _elm_lang$core$Native_Platform.incomingPort('onUserChangeRaw', _elm_lang$core$Json_Decode$value);
+var _elm_lang$elm_architecture_tutorial$Ports$onUserChange = F2(
+	function (f, noop) {
+		return _elm_lang$elm_architecture_tutorial$Ports$onUserChangeRaw(
+			function (val) {
+				return A3(
+					_elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth,
+					function (err) {
+						return noop;
+					},
+					function (u) {
+						return f(u);
+					},
+					A2(_elm_lang$core$Json_Decode$decodeValue, _elm_lang$elm_architecture_tutorial$User$decoder, val));
+			});
+	});
 
 var _elm_lang$elm_architecture_tutorial$Update$loadAllData = function (persisters) {
 	var atfn = _elm_lang$elm_architecture_tutorial$Helper_Task$attempt2(
@@ -30852,6 +31131,25 @@ var _elm_lang$elm_architecture_tutorial$Update$loadAllData = function (persister
 			}
 		});
 };
+var _elm_lang$elm_architecture_tutorial$Update$andThen = F3(
+	function (programData, msg, _p0) {
+		var _p1 = _p0;
+		var _p2 = A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, msg, _p1._0);
+		var newmodel = _p2._0;
+		var newcmd = _p2._1;
+		return A2(
+			_elm_lang$core$Platform_Cmd_ops['!'],
+			newmodel,
+			{
+				ctor: '::',
+				_0: _p1._1,
+				_1: {
+					ctor: '::',
+					_0: newcmd,
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 	function (programData, msg, model) {
 		var withMaybe = F2(
@@ -30871,25 +31169,7 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 		var withPersister = function (f) {
 			return A2(withMaybe, f, persistersIfLoggedIn);
 		};
-		var andThen = F2(
-			function (msg, _p0) {
-				var _p1 = _p0;
-				var _p2 = A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, msg, _p1._0);
-				var newmodel = _p2._0;
-				var newcmd = _p2._1;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					newmodel,
-					{
-						ctor: '::',
-						_0: _p1._1,
-						_1: {
-							ctor: '::',
-							_0: newcmd,
-							_1: {ctor: '[]'}
-						}
-					});
-			});
+		var andThen_ = _elm_lang$elm_architecture_tutorial$Update$andThen(programData);
 		var hideModalCommand = A2(_elm_lang$elm_architecture_tutorial$Helper_Core$delay, 0.5 * _elm_lang$core$Time$second, _elm_lang$elm_architecture_tutorial$Message$HideLoadingModal);
 		var _p3 = msg;
 		switch (_p3.ctor) {
@@ -31047,25 +31327,30 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'UrlChange':
-				return A2(_elm_lang$elm_architecture_tutorial$Nav$urlUpdate, _p3._0, model);
+				return A2(
+					_elm_lang$elm_architecture_tutorial$Nav$urlUpdate,
+					_p3._0,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{signupPageModel: _elm_lang$elm_architecture_tutorial$Signup_Model$initialModel, loginPageModel: _elm_lang$elm_architecture_tutorial$Login_Model$initialModel}));
 			case 'LoginFail':
 				return A2(
-					andThen,
+					andThen_,
 					_elm_lang$elm_architecture_tutorial$Message$defaultShowPopupMessage(_p3._0),
 					A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, _elm_lang$elm_architecture_tutorial$Message$HideLoadingModal, model));
 			case 'SignupFail':
 				return A2(
-					andThen,
+					andThen_,
 					_elm_lang$elm_architecture_tutorial$Message$defaultShowPopupMessage(_p3._0),
 					A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, _elm_lang$elm_architecture_tutorial$Message$HideLoadingModal, model));
 			case 'LoginSuccess':
 				var _p12 = _p3._0;
 				var _p11 = A2(_elm_lang$core$Debug$log, 'userData=', _p12);
 				return A2(
-					andThen,
+					andThen_,
 					_elm_lang$elm_architecture_tutorial$Message$KickOffLoadData,
 					A2(
-						andThen,
+						andThen_,
 						_elm_lang$elm_architecture_tutorial$Message$UpdateUser(
 							_elm_lang$core$Maybe$Just(_p12)),
 						A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, _elm_lang$elm_architecture_tutorial$Message$HideLoadingModal, model)));
@@ -31080,7 +31365,7 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 				};
 			case 'SetUserFromLocalStorage':
 				return A2(
-					andThen,
+					andThen_,
 					_elm_lang$elm_architecture_tutorial$Message$KickOffLoadData,
 					{
 						ctor: '_Tuple2',
@@ -31100,12 +31385,12 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 					});
 			case 'SignupSuccess':
 				return A2(
-					andThen,
+					andThen_,
 					A2(_elm_lang$elm_architecture_tutorial$Message$ShowPopupMessage, 'You have been signed up. To log in, please check your email and open the confirmation link.', _elm_lang$elm_architecture_tutorial$Message$SignupSuccessAcknoweldged),
 					A3(_elm_lang$elm_architecture_tutorial$Update$update, programData, _elm_lang$elm_architecture_tutorial$Message$HideLoadingModal, model));
 			case 'SignupSuccessAcknoweldged':
 				return A2(
-					andThen,
+					andThen_,
 					_elm_lang$elm_architecture_tutorial$Message$HidePopupMessage,
 					A3(
 						_elm_lang$elm_architecture_tutorial$Update$update,
@@ -31189,19 +31474,28 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 					_1: function () {
 						var _p20 = action;
 						if (_p20.ctor === 'Just') {
-							var _p21 = _p20._0;
+							var _p22 = _p20._0;
 							return {
 								ctor: '::',
 								_0: A3(
 									_elm_lang$elm_architecture_tutorial$Helper_Task$attempt2,
-									_elm_lang$core$Basics$always(
-										_elm_lang$elm_architecture_tutorial$Message$LoginFail('TODO')),
+									function (err) {
+										return _elm_lang$elm_architecture_tutorial$Message$LoginFail(
+											function () {
+												var _p21 = err;
+												if (_p21.ctor === 'LoginGeneralErrorMessage') {
+													return _p21._0;
+												} else {
+													return 'You need to verify your email before you login. Please check your inbox for a verification email. Otherwise click here to have it sent again.';
+												}
+											}());
+									},
 									function (token) {
 										return _elm_lang$elm_architecture_tutorial$Message$LoginSuccess(
-											{sessionToken: token, username: _p21.email});
+											{sessionToken: token, username: _p22.email});
 									},
 									userPersister.loginUser(
-										{username: _p21.email, password: _p21.password})),
+										{username: _p22.email, password: _p22.password})),
 								_1: {ctor: '[]'}
 							};
 						} else {
@@ -31214,11 +31508,37 @@ var _elm_lang$elm_architecture_tutorial$Update$update = F3(
 					_0: newModel,
 					_1: _elm_lang$core$Platform_Cmd$batch(commands)
 				};
-			default:
+			case 'NewUrl':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _elm_lang$navigation$Navigation$newUrl(_p3._0)
+				};
+			case 'Logout':
+				return A2(
+					andThen_,
+					_elm_lang$elm_architecture_tutorial$Message$UpdateUser(_elm_lang$core$Maybe$Nothing),
+					A2(
+						withMaybe,
+						function (userData) {
+							return {
+								ctor: '_Tuple2',
+								_0: model,
+								_1: A3(
+									_elm_lang$elm_architecture_tutorial$Helper_Task$attempt2,
+									_elm_lang$core$Basics$always(_elm_lang$elm_architecture_tutorial$Message$None),
+									_elm_lang$core$Basics$always(_elm_lang$elm_architecture_tutorial$Message$None),
+									A2(_elm_lang$elm_architecture_tutorial$ProgramData$getLogout, programData.credentials, userData.sessionToken))
+							};
+						},
+						model.userData));
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{windowSize: _p3._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
@@ -31753,38 +32073,35 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$makeContentScheme = F2
 			deleteMessage: function (acc) {
 				return A2(_elm_lang$elm_architecture_tutorial$Transactions_Message$DeleteTransaction, acc.storedKey, false);
 			},
-			headerRowCells: A2(
-				_elm_lang$core$List$map,
-				_elm_lang$html$Html$text,
-				{
+			headerLabels: {
+				ctor: '::',
+				_0: 'Description',
+				_1: {
 					ctor: '::',
-					_0: 'Description',
+					_0: ' Date',
 					_1: {
 						ctor: '::',
-						_0: ' Date',
+						_0: 'Payee',
 						_1: {
 							ctor: '::',
-							_0: 'Payee',
+							_0: 'Category',
 							_1: {
 								ctor: '::',
-								_0: 'Category',
+								_0: 'Inflow',
 								_1: {
 									ctor: '::',
-									_0: 'Inflow',
+									_0: 'Outflow',
 									_1: {
 										ctor: '::',
-										_0: 'Outflow',
-										_1: {
-											ctor: '::',
-											_0: 'Balance',
-											_1: {ctor: '[]'}
-										}
+										_0: 'Balance',
+										_1: {ctor: '[]'}
 									}
 								}
 							}
 						}
 					}
-				}),
+				}
+			},
 			canEditDelete: function (acc) {
 				return !_elm_lang$core$Native_Utils.eq(acc.storedKey, '');
 			}
@@ -31838,8 +32155,8 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$toTransactionViews = F
 				txnsForAccount,
 				balances));
 	});
-var _elm_lang$elm_architecture_tutorial$Transactions_View$view = F5(
-	function (today, accounts, categories, txns, model) {
+var _elm_lang$elm_architecture_tutorial$Transactions_View$view = F6(
+	function (viewPort, today, accounts, categories, txns, model) {
 		var range = A2(
 			_elm_lang$core$Maybe$withDefault,
 			A2(
@@ -32047,8 +32364,9 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$view = F5(
 								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: A4(
-										_elm_lang$elm_architecture_tutorial$Helper_Html$generateTable,
+									_0: A5(
+										_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort,
+										viewPort,
 										'transaction',
 										contentScheme,
 										model.editingTransaction,
@@ -32217,17 +32535,17 @@ var _elm_lang$elm_architecture_tutorial$Signup_View$view = function (model) {
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onInput(_elm_lang$elm_architecture_tutorial$Signup_Message$EmailChange),
-															_1: {ctor: '[]'}
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$value(model.email),
+																_1: {ctor: '[]'}
+															}
 														}
 													}
 												}
 											}
 										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(model.email),
-											_1: {ctor: '[]'}
-										}),
+										{ctor: '[]'}),
 									_1: {
 										ctor: '::',
 										_0: validationMessageBox(validationResult.emailInvalidMessage),
@@ -32286,17 +32604,17 @@ var _elm_lang$elm_architecture_tutorial$Signup_View$view = function (model) {
 															_1: {
 																ctor: '::',
 																_0: _elm_lang$html$Html_Events$onInput(_elm_lang$elm_architecture_tutorial$Signup_Message$PasswordChange),
-																_1: {ctor: '[]'}
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$value(model.password),
+																	_1: {ctor: '[]'}
+																}
 															}
 														}
 													}
 												}
 											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text(model.password),
-												_1: {ctor: '[]'}
-											}),
+											{ctor: '[]'}),
 										_1: {
 											ctor: '::',
 											_0: validationMessageBox(validationResult.passwordInvalidMessage),
@@ -32554,6 +32872,7 @@ var _elm_lang$elm_architecture_tutorial$View$topNavigation = F2(
 			});
 	});
 var _elm_lang$elm_architecture_tutorial$View$view = function (model) {
+	var viewPort = (_elm_lang$core$Native_Utils.cmp(model.windowSize.width, 1300) < 0) ? _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile : _elm_lang$elm_architecture_tutorial$Helper_Html$Desktop;
 	var notLoggedInMessage = A2(
 		_elm_lang$html$Html$p,
 		{ctor: '[]'},
@@ -32596,15 +32915,37 @@ var _elm_lang$elm_architecture_tutorial$View$view = function (model) {
 				_wittjosiah$elm_alerts$Alert$view(model.alerts)),
 			_1: {
 				ctor: '::',
-				_0: function () {
-					var _p2 = model.userData;
-					if (_p2.ctor === 'Nothing') {
-						return _elm_lang$html$Html$text('');
-					} else {
-						return _elm_lang$html$Html$text(
-							A2(_elm_lang$core$Basics_ops['++'], 'Logged in as ', _p2._0.username));
-					}
-				}(),
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					function () {
+						var _p2 = model.userData;
+						if (_p2.ctor === 'Nothing') {
+							return {ctor: '[]'};
+						} else {
+							return {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									A2(_elm_lang$core$Basics_ops['++'], 'Logged in as ', _p2._0.username)),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_elm_lang$elm_architecture_tutorial$Message$Logout),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Log Out'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							};
+						}
+					}()),
 				_1: {
 					ctor: '::',
 					_0: A2(_elm_lang$elm_architecture_tutorial$View$topNavigation, isLoggedIn, model),
@@ -32623,19 +32964,19 @@ var _elm_lang$elm_architecture_tutorial$View$view = function (model) {
 										A2(
 											_elm_lang$html$Html$map,
 											_elm_lang$elm_architecture_tutorial$Message$Account,
-											A2(_elm_lang$elm_architecture_tutorial$Accounts_View$view, model.accountPageModel, model.accounts)));
+											A3(_elm_lang$elm_architecture_tutorial$Accounts_View$view, viewPort, model.accountPageModel, model.accounts)));
 								case 'CategoriesPage':
 									return requiresLogin(
 										A2(
 											_elm_lang$html$Html$map,
 											_elm_lang$elm_architecture_tutorial$Message$Category,
-											A2(_elm_lang$elm_architecture_tutorial$Categories_View$view, model.categoryPageModel, model.categories)));
+											A3(_elm_lang$elm_architecture_tutorial$Categories_View$view, viewPort, model.categoryPageModel, model.categories)));
 								case 'TransactionsPage':
 									return requiresLogin(
 										A2(
 											_elm_lang$html$Html$map,
 											_elm_lang$elm_architecture_tutorial$Message$Transaction,
-											A5(_elm_lang$elm_architecture_tutorial$Transactions_View$view, model.today, model.accounts, model.categories, model.txns, model.transactionsPageModel)));
+											A6(_elm_lang$elm_architecture_tutorial$Transactions_View$view, viewPort, model.today, model.accounts, model.categories, model.txns, model.transactionsPageModel)));
 								case 'SignUpPage':
 									return A2(
 										_elm_lang$html$Html$map,
@@ -32689,15 +33030,32 @@ var _elm_lang$elm_architecture_tutorial$Main$subscriptions = function (model) {
 				_wittjosiah$elm_alerts$Alert$subscriptions(model.alerts)),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$elm_architecture_tutorial$Ports$onUserChange(
+				_0: A2(
+					_elm_lang$elm_architecture_tutorial$Ports$onUserChange,
 					function (u) {
 						return _elm_lang$elm_architecture_tutorial$Message$SetUserFromLocalStorage(
 							_elm_lang$core$Maybe$Just(u));
-					}),
-				_1: {ctor: '[]'}
+					},
+					_elm_lang$elm_architecture_tutorial$Message$None),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$window$Window$resizes(_elm_lang$elm_architecture_tutorial$Message$SizeUpdate),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
+var _elm_lang$elm_architecture_tutorial$Main$getSizeCmd = A2(
+	_elm_lang$core$Task$attempt,
+	function (result) {
+		var _p0 = result;
+		if (_p0.ctor === 'Ok') {
+			return _elm_lang$elm_architecture_tutorial$Message$SizeUpdate(_p0._0);
+		} else {
+			return _elm_lang$elm_architecture_tutorial$Message$None;
+		}
+	},
+	_elm_lang$window$Window$size);
 var _elm_lang$elm_architecture_tutorial$Main$todayCmd = A2(
 	_elm_lang$core$Task$perform,
 	function (t) {
@@ -32721,42 +33079,62 @@ var _elm_lang$elm_architecture_tutorial$Main$initialModel = {
 	today: _elm_lang$core$Date$fromTime(0),
 	signupPageModel: {email: '', password: '', showValidationErrors: false},
 	loginPageModel: {email: '', password: '', showValidationErrors: false},
-	userData: _elm_lang$core$Maybe$Nothing
-};
-var _elm_lang$elm_architecture_tutorial$Main$initialState = function (page) {
-	return {
-		ctor: '_Tuple2',
-		_0: _elm_lang$core$Native_Utils.update(
-			_elm_lang$elm_architecture_tutorial$Main$initialModel,
-			{page: page}),
-		_1: _elm_lang$core$Platform_Cmd$batch(
-			{
-				ctor: '::',
-				_0: _elm_lang$elm_architecture_tutorial$Main$todayCmd,
-				_1: {ctor: '[]'}
-			})
-	};
+	userData: _elm_lang$core$Maybe$Nothing,
+	windowSize: {width: 0, height: 0}
 };
 var _elm_lang$elm_architecture_tutorial$Main$main = function () {
-	var _p0 = _elm_community$elm_datepicker$DatePicker$init;
-	var datePicker = _p0._0;
-	var datePickerCmd = _p0._1;
+	var andThen_ = _elm_lang$elm_architecture_tutorial$Update$andThen(_elm_lang$elm_architecture_tutorial$ProgramData$programData);
+	var _p1 = _elm_community$elm_datepicker$DatePicker$init;
+	var datePicker = _p1._0;
+	var datePickerCmd = _p1._1;
 	return A2(
-		_elm_lang$navigation$Navigation$program,
+		_elm_lang$navigation$Navigation$programWithFlags,
 		_elm_lang$elm_architecture_tutorial$Message$UrlChange,
 		{
-			init: function (location) {
-				return _elm_lang$elm_architecture_tutorial$Main$initialState(
-					A2(
+			init: F2(
+				function (flags, location) {
+					var maybeUser = A3(
+						_elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth,
+						_elm_lang$core$Basics$always(_elm_lang$core$Maybe$Nothing),
+						_elm_lang$core$Maybe$Just,
+						A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$elm_architecture_tutorial$User$decoder, flags.rawUserData));
+					var page = A2(
 						_elm_lang$core$Maybe$withDefault,
 						_elm_lang$elm_architecture_tutorial$Model$PageNotFound,
-						_elm_lang$elm_architecture_tutorial$Nav$locationToPage(location)));
-			},
+						_elm_lang$elm_architecture_tutorial$Nav$locationToPage(location));
+					return A2(
+						andThen_,
+						_elm_lang$elm_architecture_tutorial$Message$KickOffLoadData,
+						A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
+								_elm_lang$elm_architecture_tutorial$Main$initialModel,
+								{page: page, userData: maybeUser}),
+							{
+								ctor: '::',
+								_0: _elm_lang$elm_architecture_tutorial$Main$todayCmd,
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$elm_architecture_tutorial$Main$getSizeCmd,
+									_1: {ctor: '[]'}
+								}
+							}));
+				}),
 			view: _elm_lang$elm_architecture_tutorial$View$view,
 			update: _elm_lang$elm_architecture_tutorial$Update$update(_elm_lang$elm_architecture_tutorial$ProgramData$programData),
 			subscriptions: _elm_lang$elm_architecture_tutorial$Main$subscriptions
 		});
-}()();
+}()(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (rawUserData) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{rawUserData: rawUserData});
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'rawUserData', _elm_lang$core$Json_Decode$string)));
+var _elm_lang$elm_architecture_tutorial$Main$Flags = function (a) {
+	return {rawUserData: a};
+};
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
