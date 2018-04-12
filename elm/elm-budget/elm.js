@@ -27378,6 +27378,18 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$textHtml = function (t) {
 		},
 		{ctor: '[]'});
 };
+var _elm_lang$elm_architecture_tutorial$Helper_Html$isCreatingNewRow = F2(
+	function (scheme, editRowMaybe) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			false,
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (editRow) {
+					return scheme.isCreatingNewRow(editRow);
+				},
+				editRowMaybe));
+	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton = F3(
 	function (viewPort, imageSrc, caption) {
 		var _p0 = viewPort;
@@ -27401,384 +27413,6 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton = F3(
 		} else {
 			return _elm_lang$html$Html$text(caption);
 		}
-	});
-var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F5(
-	function (viewPort, className, scheme, editRowMaybe, datums) {
-		var cancelButton = A2(
-			_elm_lang$html$Html$button,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onClick(scheme.cancelMessage),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/arrow-left.svg', 'Cancel'),
-				_1: {ctor: '[]'}
-			});
-		var saveButton = function () {
-			var _p1 = editRowMaybe;
-			if (_p1.ctor === 'Just') {
-				return A2(
-					_elm_lang$html$Html$button,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(
-							scheme.saveMessage(_p1._0)),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/check.svg', 'Save'),
-						_1: {ctor: '[]'}
-					});
-			} else {
-				return _elm_lang$html$Html$text('');
-			}
-		}();
-		var metaDataForViewPort = A2(
-			_elm_lang$core$List$map,
-			function (m) {
-				return {
-					width: function () {
-						var _p2 = viewPort;
-						if (_p2.ctor === 'Mobile') {
-							return m.mobileTableWidth;
-						} else {
-							return m.desktopTableWidth;
-						}
-					}(),
-					headingText: m.headingText
-				};
-			},
-			scheme.metaData);
-		var hider = function (list) {
-			return A2(
-				_elm_lang$core$List$map,
-				function (_p3) {
-					var _p4 = _p3;
-					return _p4._0;
-				},
-				A2(
-					_elm_lang$core$List$filter,
-					function (_p5) {
-						var _p6 = _p5;
-						return _elm_lang$core$Native_Utils.cmp(_p6._1.width, 0) > 0;
-					},
-					A2(_elm_lang$elm_architecture_tutorial$Helper_Core$zip, list, metaDataForViewPort)));
-		};
-		var rows = function () {
-			var tdWrap = function (_p7) {
-				var _p8 = _p7;
-				return A2(
-					_elm_lang$html$Html$td,
-					_p8._1,
-					{
-						ctor: '::',
-						_0: _p8._0,
-						_1: {ctor: '[]'}
-					});
-			};
-			var wrapedEditableRowCells = function () {
-				var _p9 = editRowMaybe;
-				if (_p9.ctor === 'Just') {
-					var cells = scheme.getEditableRowCells(_p9._0);
-					var _p10 = viewPort;
-					if (_p10.ctor === 'Mobile') {
-						return {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$td,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$colspan(
-										_elm_lang$core$List$length(cells)),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: A2(
-										_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$container,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: A2(
-												_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: A2(
-														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$class('edit-mobile-header-label'),
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text('Edit Transaction'),
-															_1: {ctor: '[]'}
-														}),
-													_1: {ctor: '[]'}
-												}),
-											_1: A2(
-												_elm_lang$core$Basics_ops['++'],
-												A2(
-													_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle,
-													A2(
-														_elm_lang$core$List$map,
-														function (m) {
-															return A2(
-																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
-																{ctor: '[]'},
-																{
-																	ctor: '::',
-																	_0: A2(
-																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
-																		{ctor: '[]'},
-																		{
-																			ctor: '::',
-																			_0: _elm_lang$html$Html$text(m.headingText),
-																			_1: {ctor: '[]'}
-																		}),
-																	_1: {ctor: '[]'}
-																});
-														},
-														scheme.metaData),
-													A2(
-														_elm_lang$core$List$map,
-														function (_p11) {
-															var _p12 = _p11;
-															return A2(
-																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
-																{ctor: '[]'},
-																{
-																	ctor: '::',
-																	_0: A2(
-																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
-																		_p12._1,
-																		{
-																			ctor: '::',
-																			_0: _p12._0,
-																			_1: {ctor: '[]'}
-																		}),
-																	_1: {ctor: '[]'}
-																});
-														},
-														cells)),
-												{
-													ctor: '::',
-													_0: A2(
-														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
-														{ctor: '[]'},
-														{
-															ctor: '::',
-															_0: A2(
-																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
-																{ctor: '[]'},
-																{
-																	ctor: '::',
-																	_0: saveButton,
-																	_1: {
-																		ctor: '::',
-																		_0: cancelButton,
-																		_1: {ctor: '[]'}
-																	}
-																}),
-															_1: {ctor: '[]'}
-														}),
-													_1: {ctor: '[]'}
-												})
-										}),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						};
-					} else {
-						return A2(
-							_elm_lang$core$List$map,
-							tdWrap,
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								cells,
-								{
-									ctor: '::',
-									_0: {
-										ctor: '_Tuple2',
-										_0: A2(
-											_elm_lang$html$Html$div,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: saveButton,
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html$text(' '),
-													_1: {
-														ctor: '::',
-														_0: cancelButton,
-														_1: {ctor: '[]'}
-													}
-												}
-											}),
-										_1: {ctor: '[]'}
-									},
-									_1: {ctor: '[]'}
-								}));
-					}
-				} else {
-					return {ctor: '[]'};
-				}
-			}();
-			var rows = A2(
-				_elm_lang$core$List$map,
-				function (datum) {
-					return A2(
-						_elm_lang$html$Html$tr,
-						{ctor: '[]'},
-						hider(
-							A2(
-								_elm_lang$core$Maybe$withDefault,
-								false,
-								A2(
-									_elm_lang$core$Maybe$map,
-									function (editRow) {
-										return A2(scheme.isRowForEdit, datum, editRow);
-									},
-									editRowMaybe)) ? wrapedEditableRowCells : A2(
-								_elm_lang$core$List$map,
-								tdWrap,
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									scheme.getReadOnlyRowCells(datum),
-									{
-										ctor: '::',
-										_0: {
-											ctor: '_Tuple2',
-											_0: scheme.canEditDelete(datum) ? A2(
-												_elm_lang$html$Html$div,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$button,
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html_Events$onClick(
-																scheme.editMessage(datum)),
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/edit.svg', 'Edit'),
-															_1: {ctor: '[]'}
-														}),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html$text(' '),
-														_1: {
-															ctor: '::',
-															_0: A2(
-																_elm_lang$html$Html$button,
-																{
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Events$onClick(
-																		scheme.deleteMessage(datum)),
-																	_1: {ctor: '[]'}
-																},
-																{
-																	ctor: '::',
-																	_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/minus-circle-red.svg', 'Delete'),
-																	_1: {ctor: '[]'}
-																}),
-															_1: {ctor: '[]'}
-														}
-													}
-												}) : _elm_lang$html$Html$text('Saving...'),
-											_1: {ctor: '[]'}
-										},
-										_1: {ctor: '[]'}
-									}))));
-				},
-				datums);
-			return A2(
-				_elm_lang$core$Maybe$withDefault,
-				false,
-				A2(
-					_elm_lang$core$Maybe$map,
-					function (editRow) {
-						return scheme.isCreatingNewRow(editRow);
-					},
-					editRowMaybe)) ? A2(
-				_elm_lang$core$Basics_ops['++'],
-				rows,
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$tr,
-						{ctor: '[]'},
-						wrapedEditableRowCells),
-					_1: {ctor: '[]'}
-				}) : A2(
-				_elm_lang$core$Basics_ops['++'],
-				rows,
-				{ctor: '[]'});
-		}();
-		var headerItems = A2(
-			_elm_lang$core$List$filterMap,
-			function (m) {
-				return (_elm_lang$core$Native_Utils.cmp(m.width, 0) > 0) ? _elm_lang$core$Maybe$Just(
-					A2(
-						_elm_lang$html$Html$th,
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html_Attributes$attribute,
-								'width',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(m.width),
-									'%')),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(m.headingText),
-							_1: {ctor: '[]'}
-						})) : _elm_lang$core$Maybe$Nothing;
-			},
-			metaDataForViewPort);
-		return A2(
-			_elm_lang$html$Html$table,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$classList(
-					{
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: className, _1: true},
-						_1: {
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'edit-table', _1: true},
-							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$thead,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$tr,
-							{ctor: '[]'},
-							headerItems),
-						_1: {ctor: '[]'}
-					}),
-				_1: rows
-			});
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$onChange = function (handler) {
 	return A2(
@@ -27804,8 +27438,8 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$navi = F5(
 	function (className, selectedItem, createUrlForItem, createTextForItem, items) {
 		var menuEntry = F2(
 			function (item, menuText) {
-				var _p13 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
-				if (_p13 === true) {
+				var _p1 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
+				if (_p1 === true) {
 					return A2(
 						_elm_lang$html$Html$div,
 						{
@@ -27889,6 +27523,392 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableCellMetaData = F3(
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$Desktop = {ctor: 'Desktop'};
 var _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile = {ctor: 'Mobile'};
+var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F6(
+	function (viewPort, className, scheme, editRowMaybe, datums, addItemView) {
+		var isCreatingNewRowResult = A2(_elm_lang$elm_architecture_tutorial$Helper_Html$isCreatingNewRow, scheme, editRowMaybe);
+		var hideNonEditRows = _elm_lang$core$Native_Utils.eq(viewPort, _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile) && _elm_lang$elm_architecture_tutorial$Helper_Core$isJust(editRowMaybe);
+		var cancelButton = A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(scheme.cancelMessage),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/arrow-left.svg', 'Cancel'),
+				_1: {ctor: '[]'}
+			});
+		var saveButton = function () {
+			var _p2 = editRowMaybe;
+			if (_p2.ctor === 'Just') {
+				return A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							scheme.saveMessage(_p2._0)),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/check.svg', 'Save'),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return _elm_lang$html$Html$text('');
+			}
+		}();
+		var metaDataForViewPort = A2(
+			_elm_lang$core$List$map,
+			function (m) {
+				return {
+					width: function () {
+						var _p3 = viewPort;
+						if (_p3.ctor === 'Mobile') {
+							return m.mobileTableWidth;
+						} else {
+							return m.desktopTableWidth;
+						}
+					}(),
+					headingText: m.headingText
+				};
+			},
+			scheme.metaData);
+		var hider = function (list) {
+			return A2(
+				_elm_lang$core$List$map,
+				function (_p4) {
+					var _p5 = _p4;
+					return _p5._0;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p6) {
+						var _p7 = _p6;
+						return _elm_lang$core$Native_Utils.cmp(_p7._1.width, 0) > 0;
+					},
+					A2(_elm_lang$elm_architecture_tutorial$Helper_Core$zip, list, metaDataForViewPort)));
+		};
+		var rows = function () {
+			var tdWrap = function (_p8) {
+				var _p9 = _p8;
+				return A2(
+					_elm_lang$html$Html$td,
+					_p9._1,
+					{
+						ctor: '::',
+						_0: _p9._0,
+						_1: {ctor: '[]'}
+					});
+			};
+			var wrapedEditableRowCells = function () {
+				var _p10 = editRowMaybe;
+				if (_p10.ctor === 'Just') {
+					var cells = scheme.getEditableRowCells(_p10._0);
+					var _p11 = viewPort;
+					if (_p11.ctor === 'Mobile') {
+						return {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$td,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$colspan(
+										_elm_lang$core$List$length(cells)),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$container,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('edit-mobile-header-label'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(
+																isCreatingNewRowResult ? 'Add Transaction' : 'Edit Transaction'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}),
+											_1: A2(
+												_elm_lang$core$Basics_ops['++'],
+												A2(
+													_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle,
+													A2(
+														_elm_lang$core$List$map,
+														function (m) {
+															return A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(m.headingText),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																});
+														},
+														scheme.metaData),
+													A2(
+														_elm_lang$core$List$map,
+														function (_p12) {
+															var _p13 = _p12;
+															return A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																		_p13._1,
+																		{
+																			ctor: '::',
+																			_0: _p13._0,
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																});
+														},
+														cells)),
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: saveButton,
+																	_1: {
+																		ctor: '::',
+																		_0: cancelButton,
+																		_1: {ctor: '[]'}
+																	}
+																}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												})
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						};
+					} else {
+						return A2(
+							_elm_lang$core$List$map,
+							tdWrap,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								cells,
+								{
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: saveButton,
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(' '),
+													_1: {
+														ctor: '::',
+														_0: cancelButton,
+														_1: {ctor: '[]'}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
+									},
+									_1: {ctor: '[]'}
+								}));
+					}
+				} else {
+					return {ctor: '[]'};
+				}
+			}();
+			var rows = A2(
+				_elm_lang$core$List$filterMap,
+				function (datum) {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						false,
+						A2(
+							_elm_lang$core$Maybe$map,
+							function (editRow) {
+								return A2(scheme.isRowForEdit, datum, editRow);
+							},
+							editRowMaybe)) ? _elm_lang$core$Maybe$Just(
+						A2(
+							_elm_lang$html$Html$tr,
+							{ctor: '[]'},
+							hider(wrapedEditableRowCells))) : (hideNonEditRows ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(
+						A2(
+							_elm_lang$html$Html$tr,
+							{ctor: '[]'},
+							hider(
+								A2(
+									_elm_lang$core$List$map,
+									tdWrap,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										scheme.getReadOnlyRowCells(datum),
+										{
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: scheme.canEditDelete(datum) ? A2(
+													_elm_lang$html$Html$div,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$button,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Events$onClick(
+																	scheme.editMessage(datum)),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/edit.svg', 'Edit'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(' '),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$button,
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onClick(
+																			scheme.deleteMessage(datum)),
+																		_1: {ctor: '[]'}
+																	},
+																	{
+																		ctor: '::',
+																		_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/minus-circle-red.svg', 'Delete'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															}
+														}
+													}) : _elm_lang$html$Html$text('Saving...'),
+												_1: {ctor: '[]'}
+											},
+											_1: {ctor: '[]'}
+										}))))));
+				},
+				datums);
+			return isCreatingNewRowResult ? A2(
+				_elm_lang$core$Basics_ops['++'],
+				rows,
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$tr,
+						{ctor: '[]'},
+						wrapedEditableRowCells),
+					_1: {ctor: '[]'}
+				}) : A2(
+				_elm_lang$core$Basics_ops['++'],
+				rows,
+				{ctor: '[]'});
+		}();
+		var headerItems = A2(
+			_elm_lang$core$List$filterMap,
+			function (m) {
+				return (_elm_lang$core$Native_Utils.cmp(m.width, 0) > 0) ? _elm_lang$core$Maybe$Just(
+					A2(
+						_elm_lang$html$Html$th,
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Attributes$attribute,
+								'width',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(m.width),
+									'%')),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(m.headingText),
+							_1: {ctor: '[]'}
+						})) : _elm_lang$core$Maybe$Nothing;
+			},
+			metaDataForViewPort);
+		return {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$table,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$classList(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: className, _1: true},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'edit-table', _1: true},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$thead,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$tr,
+								{ctor: '[]'},
+								headerItems),
+							_1: {ctor: '[]'}
+						}),
+					_1: rows
+				}),
+			_1: {
+				ctor: '::',
+				_0: (isCreatingNewRowResult || (_elm_lang$core$Native_Utils.eq(viewPort, _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile) && _elm_lang$elm_architecture_tutorial$Helper_Core$isJust(editRowMaybe))) ? _elm_lang$html$Html$text('') : addItemView,
+				_1: {ctor: '[]'}
+			}
+		};
+	});
 
 var _elm_lang$elm_architecture_tutorial$Accounts_View$columnIds = {name: 'AccountName'};
 var _elm_lang$elm_architecture_tutorial$Accounts_View$deleteModal = function (storedKey) {
@@ -28065,12 +28085,16 @@ var _elm_lang$elm_architecture_tutorial$Accounts_View$view = F3(
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A5(_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort, viewPort, 'accounts', _elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme, model.editingAccountRow, accounts),
-				_1: {
-					ctor: '::',
-					_0: A2(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				A6(
+					_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort,
+					viewPort,
+					'accounts',
+					_elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme,
+					model.editingAccountRow,
+					accounts,
+					A2(
 						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
@@ -28081,21 +28105,19 @@ var _elm_lang$elm_architecture_tutorial$Accounts_View$view = F3(
 							ctor: '::',
 							_0: _elm_lang$html$Html$text('Add Account'),
 							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: function () {
-							var _p0 = model.confirmDeleteKey;
-							if (_p0.ctor === 'Nothing') {
-								return _elm_lang$html$Html$text('');
-							} else {
-								return _elm_lang$elm_architecture_tutorial$Accounts_View$deleteModal(_p0._0);
-							}
-						}(),
-						_1: {ctor: '[]'}
-					}
-				}
-			});
+						})),
+				{
+					ctor: '::',
+					_0: function () {
+						var _p0 = model.confirmDeleteKey;
+						if (_p0.ctor === 'Nothing') {
+							return _elm_lang$html$Html$text('');
+						} else {
+							return _elm_lang$elm_architecture_tutorial$Accounts_View$deleteModal(_p0._0);
+						}
+					}(),
+					_1: {ctor: '[]'}
+				}));
 	});
 
 var _elm_lang$elm_architecture_tutorial$Categories_Update$txnDependsOnAction = F2(
@@ -28431,12 +28453,16 @@ var _elm_lang$elm_architecture_tutorial$Categories_View$view = F3(
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A5(_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort, viewPort, 'categories', _elm_lang$elm_architecture_tutorial$Categories_View$contentScheme, model.editingCategoryRow, categories),
-				_1: {
-					ctor: '::',
-					_0: A2(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				A6(
+					_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort,
+					viewPort,
+					'categories',
+					_elm_lang$elm_architecture_tutorial$Categories_View$contentScheme,
+					model.editingCategoryRow,
+					categories,
+					A2(
 						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
@@ -28447,21 +28473,19 @@ var _elm_lang$elm_architecture_tutorial$Categories_View$view = F3(
 							ctor: '::',
 							_0: _elm_lang$html$Html$text('Add Category'),
 							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: function () {
-							var _p0 = model.confirmDeleteKey;
-							if (_p0.ctor === 'Nothing') {
-								return _elm_lang$html$Html$text('');
-							} else {
-								return _elm_lang$elm_architecture_tutorial$Categories_View$deleteModal(_p0._0);
-							}
-						}(),
-						_1: {ctor: '[]'}
-					}
-				}
-			});
+						})),
+				{
+					ctor: '::',
+					_0: function () {
+						var _p0 = model.confirmDeleteKey;
+						if (_p0.ctor === 'Nothing') {
+							return _elm_lang$html$Html$text('');
+						} else {
+							return _elm_lang$elm_architecture_tutorial$Categories_View$deleteModal(_p0._0);
+						}
+					}(),
+					_1: {ctor: '[]'}
+				}));
 	});
 
 var _elm_lang$elm_architecture_tutorial$DatePicker_Settings$settings = _elm_lang$core$Native_Utils.update(
@@ -32088,7 +32112,7 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$makeContentScheme = F2
 												_0: _elm_lang$html$Html_Attributes$id(_elm_lang$elm_architecture_tutorial$Transactions_Common$columnIds.inflow),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$type_('text'),
+													_0: _elm_lang$html$Html_Attributes$type_('number'),
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$html$Html_Attributes$placeholder('inflow'),
@@ -32133,7 +32157,7 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$makeContentScheme = F2
 													_0: _elm_lang$html$Html_Attributes$id(_elm_lang$elm_architecture_tutorial$Transactions_Common$columnIds.outflow),
 													_1: {
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$type_('text'),
+														_0: _elm_lang$html$Html_Attributes$type_('number'),
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$html$Html_Attributes$placeholder('outflow'),
@@ -32497,33 +32521,26 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$view = F6(
 							_0: A2(
 								_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
 								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A5(
-										_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort,
-										viewPort,
-										'transaction',
-										contentScheme,
-										model.editingTransaction,
-										A3(_elm_lang$elm_architecture_tutorial$Transactions_View$toTransactionViews, range, txns, model.selectedAccountKey)),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$button,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onClick(
-													_elm_lang$elm_architecture_tutorial$Transactions_Message$AddTransaction(model.selectedAccountKey)),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Add Transaction'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
-								}),
+								A6(
+									_elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort,
+									viewPort,
+									'transaction',
+									contentScheme,
+									model.editingTransaction,
+									A3(_elm_lang$elm_architecture_tutorial$Transactions_View$toTransactionViews, range, txns, model.selectedAccountKey),
+									A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(
+												_elm_lang$elm_architecture_tutorial$Transactions_Message$AddTransaction(model.selectedAccountKey)),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Add Transaction'),
+											_1: {ctor: '[]'}
+										}))),
 							_1: {ctor: '[]'}
 						}) : _elm_lang$html$Html$text(''),
 					_1: {
