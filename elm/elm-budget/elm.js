@@ -13421,16 +13421,29 @@ var _elm_lang$elm_architecture_tutorial$Helper_Decoder$dropBadDecoder = function
 			_elm_lang$core$Json_Decode$maybe(decoder)));
 };
 
+var _elm_lang$elm_architecture_tutorial$Helper_Core$zip = F2(
+	function (xs, ys) {
+		var _p0 = {ctor: '_Tuple2', _0: xs, _1: ys};
+		if ((_p0._0.ctor === '::') && (_p0._1.ctor === '::')) {
+			return {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _p0._0._0, _1: _p0._1._0},
+				_1: A2(_elm_lang$elm_architecture_tutorial$Helper_Core$zip, _p0._0._1, _p0._1._1)
+			};
+		} else {
+			return {ctor: '[]'};
+		}
+	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$shuffle = F2(
 	function (l1, l2) {
-		var _p0 = l1;
-		if (_p0.ctor === '[]') {
+		var _p1 = l1;
+		if (_p1.ctor === '[]') {
 			return l2;
 		} else {
 			return {
 				ctor: '::',
-				_0: _p0._0,
-				_1: A2(_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle, l2, _p0._1)
+				_0: _p1._0,
+				_1: A2(_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle, l2, _p1._1)
 			};
 		}
 	});
@@ -13438,7 +13451,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$delay = F2(
 	function (time, msg) {
 		return A2(
 			_elm_lang$core$Task$perform,
-			function (_p1) {
+			function (_p2) {
 				return msg;
 			},
 			_elm_lang$core$Process$sleep(time));
@@ -13446,12 +13459,12 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$delay = F2(
 var _elm_lang$elm_architecture_tutorial$Helper_Core$withIndexes = function () {
 	var withIndexesR = F2(
 		function (idx, list) {
-			var _p2 = list;
-			if (_p2.ctor === '::') {
+			var _p3 = list;
+			if (_p3.ctor === '::') {
 				return {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: idx, _1: _p2._0},
-					_1: A2(withIndexesR, idx + 1, _p2._1)
+					_0: {ctor: '_Tuple2', _0: idx, _1: _p3._0},
+					_1: A2(withIndexesR, idx + 1, _p3._1)
 				};
 			} else {
 				return {ctor: '[]'};
@@ -13479,31 +13492,31 @@ var _elm_lang$elm_architecture_tutorial$Helper_Core$lookupWithDefault = F5(
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$mapBoth = F3(
 	function (fromError, fromOK, result) {
-		var _p3 = result;
-		if (_p3.ctor === 'Err') {
-			return fromError(_p3._0);
+		var _p4 = result;
+		if (_p4.ctor === 'Err') {
+			return fromError(_p4._0);
 		} else {
-			return fromOK(_p3._0);
+			return fromOK(_p4._0);
 		}
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Core$isErr = function (v) {
-	var _p4 = v;
-	if (_p4.ctor === 'Err') {
+	var _p5 = v;
+	if (_p5.ctor === 'Err') {
 		return true;
 	} else {
 		return false;
 	}
 };
 var _elm_lang$elm_architecture_tutorial$Helper_Core$isNothing = function (v) {
-	var _p5 = v;
-	if (_p5.ctor === 'Nothing') {
+	var _p6 = v;
+	if (_p6.ctor === 'Nothing') {
 		return true;
 	} else {
 		return false;
 	}
 };
-var _elm_lang$elm_architecture_tutorial$Helper_Core$isJust = function (_p6) {
-	return !_elm_lang$elm_architecture_tutorial$Helper_Core$isNothing(_p6);
+var _elm_lang$elm_architecture_tutorial$Helper_Core$isJust = function (_p7) {
+	return !_elm_lang$elm_architecture_tutorial$Helper_Core$isNothing(_p7);
 };
 var _elm_lang$elm_architecture_tutorial$Helper_Core$roundFloat2dp = function (f) {
 	return _elm_lang$core$Basics$toFloat(
@@ -27365,206 +27378,329 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$textHtml = function (t) {
 		},
 		{ctor: '[]'});
 };
+var _elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton = F3(
+	function (viewPort, imageSrc, caption) {
+		var _p0 = viewPort;
+		if (_p0.ctor === 'Mobile') {
+			return A2(
+				_elm_lang$html$Html$img,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('mobile-button-image'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$src(imageSrc),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$alt(caption),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'});
+		} else {
+			return _elm_lang$html$Html$text(caption);
+		}
+	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F5(
 	function (viewPort, className, scheme, editRowMaybe, datums) {
-		var trish = function () {
-			var _p0 = viewPort;
-			if (_p0.ctor === 'Desktop') {
-				return _elm_lang$html$Html$tr;
-			} else {
-				return _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row;
-			}
-		}();
-		var tdish = function () {
-			var _p1 = viewPort;
-			if (_p1.ctor === 'Desktop') {
-				return _elm_lang$html$Html$td;
-			} else {
-				return _elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12;
-			}
-		}();
-		var rows = function () {
-			var cellWrap = function (_p2) {
-				var _p3 = _p2;
+		var cancelButton = A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(scheme.cancelMessage),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/arrow-left.svg', 'Cancel'),
+				_1: {ctor: '[]'}
+			});
+		var saveButton = function () {
+			var _p1 = editRowMaybe;
+			if (_p1.ctor === 'Just') {
 				return A2(
-					tdish,
-					_p3._1,
+					_elm_lang$html$Html$button,
 					{
 						ctor: '::',
-						_0: _p3._0,
+						_0: _elm_lang$html$Html_Events$onClick(
+							scheme.saveMessage(_p1._0)),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/check.svg', 'Save'),
+						_1: {ctor: '[]'}
+					});
+			} else {
+				return _elm_lang$html$Html$text('');
+			}
+		}();
+		var metaDataForViewPort = A2(
+			_elm_lang$core$List$map,
+			function (m) {
+				return {
+					width: function () {
+						var _p2 = viewPort;
+						if (_p2.ctor === 'Mobile') {
+							return m.mobileTableWidth;
+						} else {
+							return m.desktopTableWidth;
+						}
+					}(),
+					headingText: m.headingText
+				};
+			},
+			scheme.metaData);
+		var hider = function (list) {
+			return A2(
+				_elm_lang$core$List$map,
+				function (_p3) {
+					var _p4 = _p3;
+					return _p4._0;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p5) {
+						var _p6 = _p5;
+						return _elm_lang$core$Native_Utils.cmp(_p6._1.width, 0) > 0;
+					},
+					A2(_elm_lang$elm_architecture_tutorial$Helper_Core$zip, list, metaDataForViewPort)));
+		};
+		var rows = function () {
+			var tdWrap = function (_p7) {
+				var _p8 = _p7;
+				return A2(
+					_elm_lang$html$Html$td,
+					_p8._1,
+					{
+						ctor: '::',
+						_0: _p8._0,
 						_1: {ctor: '[]'}
 					});
 			};
 			var wrapedEditableRowCells = function () {
-				var _p4 = editRowMaybe;
-				if (_p4.ctor === 'Just') {
-					var _p5 = _p4._0;
-					return A2(
-						_elm_lang$core$List$map,
-						cellWrap,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							scheme.getEditableRowCells(_p5),
-							{
-								ctor: '::',
-								_0: {
-									ctor: '_Tuple2',
+				var _p9 = editRowMaybe;
+				if (_p9.ctor === 'Just') {
+					var cells = scheme.getEditableRowCells(_p9._0);
+					var _p10 = viewPort;
+					if (_p10.ctor === 'Mobile') {
+						return {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$td,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$colspan(
+										_elm_lang$core$List$length(cells)),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$div,
+										_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$container,
 										{ctor: '[]'},
 										{
 											ctor: '::',
 											_0: A2(
-												_elm_lang$html$Html$button,
+												_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+												{ctor: '[]'},
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html_Events$onClick(scheme.cancelMessage),
-													_1: {ctor: '[]'}
-												},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('Cancel'),
+													_0: A2(
+														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('edit-mobile-header-label'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Edit Transaction'),
+															_1: {ctor: '[]'}
+														}),
 													_1: {ctor: '[]'}
 												}),
-											_1: {
+											_1: A2(
+												_elm_lang$core$Basics_ops['++'],
+												A2(
+													_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle,
+													A2(
+														_elm_lang$core$List$map,
+														function (m) {
+															return A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(m.headingText),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																});
+														},
+														scheme.metaData),
+													A2(
+														_elm_lang$core$List$map,
+														function (_p11) {
+															var _p12 = _p11;
+															return A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																		_p12._1,
+																		{
+																			ctor: '::',
+																			_0: _p12._0,
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																});
+														},
+														cells)),
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$row,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$elm_architecture_tutorial$Helper_SkeletonCss$col12,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: saveButton,
+																	_1: {
+																		ctor: '::',
+																		_0: cancelButton,
+																		_1: {ctor: '[]'}
+																	}
+																}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												})
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						};
+					} else {
+						return A2(
+							_elm_lang$core$List$map,
+							tdWrap,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								cells,
+								{
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{ctor: '[]'},
+											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text(' '),
+												_0: saveButton,
 												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(' '),
+													_1: {
+														ctor: '::',
+														_0: cancelButton,
+														_1: {ctor: '[]'}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
+									},
+									_1: {ctor: '[]'}
+								}));
+					}
+				} else {
+					return {ctor: '[]'};
+				}
+			}();
+			var rows = A2(
+				_elm_lang$core$List$map,
+				function (datum) {
+					return A2(
+						_elm_lang$html$Html$tr,
+						{ctor: '[]'},
+						hider(
+							A2(
+								_elm_lang$core$Maybe$withDefault,
+								false,
+								A2(
+									_elm_lang$core$Maybe$map,
+									function (editRow) {
+										return A2(scheme.isRowForEdit, datum, editRow);
+									},
+									editRowMaybe)) ? wrapedEditableRowCells : A2(
+								_elm_lang$core$List$map,
+								tdWrap,
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									scheme.getReadOnlyRowCells(datum),
+									{
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: scheme.canEditDelete(datum) ? A2(
+												_elm_lang$html$Html$div,
+												{ctor: '[]'},
+												{
 													ctor: '::',
 													_0: A2(
 														_elm_lang$html$Html$button,
 														{
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onClick(
-																scheme.saveMessage(_p5)),
+																scheme.editMessage(datum)),
 															_1: {ctor: '[]'}
 														},
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html$text('Save'),
+															_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/edit.svg', 'Edit'),
 															_1: {ctor: '[]'}
 														}),
-													_1: {ctor: '[]'}
-												}
-											}
-										}),
-									_1: {ctor: '[]'}
-								},
-								_1: {ctor: '[]'}
-							}));
-				} else {
-					return {ctor: '[]'};
-				}
-			}();
-			var rows = A2(
-				_elm_lang$core$List$intersperse,
-				function () {
-					var _p6 = viewPort;
-					if (_p6.ctor === 'Desktop') {
-						return _elm_lang$html$Html$text('');
-					} else {
-						return A2(
-							_elm_lang$html$Html$hr,
-							{ctor: '[]'},
-							{ctor: '[]'});
-					}
-				}(),
-				A2(
-					_elm_lang$core$List$map,
-					function (datum) {
-						return A2(
-							trish,
-							{ctor: '[]'},
-							A2(
-								_elm_lang$elm_architecture_tutorial$Helper_Core$shuffle,
-								function () {
-									var _p7 = viewPort;
-									if (_p7.ctor === 'Desktop') {
-										return {ctor: '[]'};
-									} else {
-										return A2(
-											_elm_lang$core$List$map,
-											function (s) {
-												return A2(
-													trish,
-													{
+													_1: {
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('mobile-label'),
-														_1: {ctor: '[]'}
-													},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text(s),
-														_1: {ctor: '[]'}
-													});
-											},
-											scheme.headerLabels);
-									}
-								}(),
-								A2(
-									_elm_lang$core$Maybe$withDefault,
-									false,
-									A2(
-										_elm_lang$core$Maybe$map,
-										function (editRow) {
-											return A2(scheme.isRowForEdit, datum, editRow);
-										},
-										editRowMaybe)) ? wrapedEditableRowCells : A2(
-									_elm_lang$core$List$map,
-									cellWrap,
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										scheme.getReadOnlyRowCells(datum),
-										{
-											ctor: '::',
-											_0: {
-												ctor: '_Tuple2',
-												_0: scheme.canEditDelete(datum) ? A2(
-													_elm_lang$html$Html$div,
-													{ctor: '[]'},
-													{
-														ctor: '::',
-														_0: A2(
-															_elm_lang$html$Html$button,
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html_Events$onClick(
-																	scheme.editMessage(datum)),
-																_1: {ctor: '[]'}
-															},
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html$text('Edit'),
-																_1: {ctor: '[]'}
-															}),
+														_0: _elm_lang$html$Html$text(' '),
 														_1: {
 															ctor: '::',
-															_0: _elm_lang$html$Html$text(' '),
-															_1: {
-																ctor: '::',
-																_0: A2(
-																	_elm_lang$html$Html$button,
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onClick(
-																			scheme.deleteMessage(datum)),
-																		_1: {ctor: '[]'}
-																	},
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html$text('Delete'),
-																		_1: {ctor: '[]'}
-																	}),
-																_1: {ctor: '[]'}
-															}
+															_0: A2(
+																_elm_lang$html$Html$button,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onClick(
+																		scheme.deleteMessage(datum)),
+																	_1: {ctor: '[]'}
+																},
+																{
+																	ctor: '::',
+																	_0: A3(_elm_lang$elm_architecture_tutorial$Helper_Html$responsiveButton, viewPort, 'img/minus-circle-red.svg', 'Delete'),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
 														}
-													}) : _elm_lang$html$Html$text('Saving...'),
-												_1: {ctor: '[]'}
-											},
+													}
+												}) : _elm_lang$html$Html$text('Saving...'),
 											_1: {ctor: '[]'}
-										}))));
-					},
-					datums));
+										},
+										_1: {ctor: '[]'}
+									}))));
+				},
+				datums);
 			return A2(
 				_elm_lang$core$Maybe$withDefault,
 				false,
@@ -27579,7 +27715,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F5
 				{
 					ctor: '::',
 					_0: A2(
-						trish,
+						_elm_lang$html$Html$tr,
 						{ctor: '[]'},
 						wrapedEditableRowCells),
 					_1: {ctor: '[]'}
@@ -27588,78 +27724,61 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$generateBasedOnViewPort = F5
 				rows,
 				{ctor: '[]'});
 		}();
-		var desktopHeaderItems = A2(
-			_elm_lang$core$List$map,
-			function (cell) {
-				return A2(
-					_elm_lang$html$Html$th,
+		var headerItems = A2(
+			_elm_lang$core$List$filterMap,
+			function (m) {
+				return (_elm_lang$core$Native_Utils.cmp(m.width, 0) > 0) ? _elm_lang$core$Maybe$Just(
+					A2(
+						_elm_lang$html$Html$th,
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Attributes$attribute,
+								'width',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(m.width),
+									'%')),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(m.headingText),
+							_1: {ctor: '[]'}
+						})) : _elm_lang$core$Maybe$Nothing;
+			},
+			metaDataForViewPort);
+		return A2(
+			_elm_lang$html$Html$table,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$classList(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: className, _1: true},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'edit-table', _1: true},
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$thead,
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: cell,
-						_1: {ctor: '[]'}
-					});
-			},
-			A2(
-				_elm_lang$core$List$map,
-				_elm_lang$html$Html$text,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					scheme.headerLabels,
-					{
-						ctor: '::',
-						_0: '',
-						_1: {ctor: '[]'}
-					})));
-		return function () {
-			var _p8 = viewPort;
-			if (_p8.ctor === 'Desktop') {
-				return _elm_lang$html$Html$table(
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$classList(
-							{
-								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: className, _1: true},
-								_1: {
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'edit-table', _1: true},
-									_1: {ctor: '[]'}
-								}
-							}),
-						_1: {ctor: '[]'}
-					});
-			} else {
-				return _elm_lang$html$Html$div(
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class(className),
-						_1: {ctor: '[]'}
-					});
-			}
-		}()(
-			function () {
-				var _p9 = viewPort;
-				if (_p9.ctor === 'Desktop') {
-					return {
-						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$thead,
+							_elm_lang$html$Html$tr,
 							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$tr,
-									{ctor: '[]'},
-									desktopHeaderItems),
-								_1: {ctor: '[]'}
-							}),
-						_1: rows
-					};
-				} else {
-					return rows;
-				}
-			}());
+							headerItems),
+						_1: {ctor: '[]'}
+					}),
+				_1: rows
+			});
 	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$onChange = function (handler) {
 	return A2(
@@ -27685,8 +27804,8 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$navi = F5(
 	function (className, selectedItem, createUrlForItem, createTextForItem, items) {
 		var menuEntry = F2(
 			function (item, menuText) {
-				var _p10 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
-				if (_p10 === true) {
+				var _p13 = _elm_lang$core$Native_Utils.eq(item, selectedItem);
+				if (_p13 === true) {
 					return A2(
 						_elm_lang$html$Html$div,
 						{
@@ -27753,7 +27872,7 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableTableContentScheme =
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {getReadOnlyRowCells: a, getEditableRowCells: b, editMessage: c, saveMessage: d, canEditDelete: e, cancelMessage: f, deleteMessage: g, isRowForEdit: h, headerLabels: i, isCreatingNewRow: j};
+										return {getReadOnlyRowCells: a, getEditableRowCells: b, editMessage: c, saveMessage: d, canEditDelete: e, cancelMessage: f, deleteMessage: g, isRowForEdit: h, isCreatingNewRow: i, metaData: j};
 									};
 								};
 							};
@@ -27764,6 +27883,10 @@ var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableTableContentScheme =
 		};
 	};
 };
+var _elm_lang$elm_architecture_tutorial$Helper_Html$EditableCellMetaData = F3(
+	function (a, b, c) {
+		return {desktopTableWidth: a, mobileTableWidth: b, headingText: c};
+	});
 var _elm_lang$elm_architecture_tutorial$Helper_Html$Desktop = {ctor: 'Desktop'};
 var _elm_lang$elm_architecture_tutorial$Helper_Html$Mobile = {ctor: 'Mobile'};
 
@@ -27924,10 +28047,14 @@ var _elm_lang$elm_architecture_tutorial$Accounts_View$accoutContentScheme = {
 	deleteMessage: function (acc) {
 		return A2(_elm_lang$elm_architecture_tutorial$Accounts_Message$DeleteAccount, acc.storedKey, false);
 	},
-	headerLabels: {
+	metaData: {
 		ctor: '::',
-		_0: 'Account Name',
-		_1: {ctor: '[]'}
+		_0: {desktopTableWidth: 50, mobileTableWidth: 50, headingText: 'Account Name'},
+		_1: {
+			ctor: '::',
+			_0: {desktopTableWidth: 50, mobileTableWidth: 50, headingText: ''},
+			_1: {ctor: '[]'}
+		}
 	},
 	canEditDelete: function (acc) {
 		return !_elm_lang$core$Native_Utils.eq(acc.storedKey, '');
@@ -28286,10 +28413,14 @@ var _elm_lang$elm_architecture_tutorial$Categories_View$contentScheme = {
 	deleteMessage: function (acc) {
 		return A2(_elm_lang$elm_architecture_tutorial$Categories_Message$DeleteCategory, acc.storedKey, false);
 	},
-	headerLabels: {
+	metaData: {
 		ctor: '::',
-		_0: 'Category Name',
-		_1: {ctor: '[]'}
+		_0: {desktopTableWidth: 50, mobileTableWidth: 50, headingText: 'Category Name'},
+		_1: {
+			ctor: '::',
+			_0: {desktopTableWidth: 50, mobileTableWidth: 50, headingText: ''},
+			_1: {ctor: '[]'}
+		}
 	},
 	canEditDelete: function (acc) {
 		return !_elm_lang$core$Native_Utils.eq(acc.storedKey, '');
@@ -32073,28 +32204,32 @@ var _elm_lang$elm_architecture_tutorial$Transactions_View$makeContentScheme = F2
 			deleteMessage: function (acc) {
 				return A2(_elm_lang$elm_architecture_tutorial$Transactions_Message$DeleteTransaction, acc.storedKey, false);
 			},
-			headerLabels: {
+			metaData: {
 				ctor: '::',
-				_0: 'Description',
+				_0: {desktopTableWidth: 15, mobileTableWidth: 25, headingText: 'Description'},
 				_1: {
 					ctor: '::',
-					_0: ' Date',
+					_0: {desktopTableWidth: 15, mobileTableWidth: 25, headingText: 'Date'},
 					_1: {
 						ctor: '::',
-						_0: 'Payee',
+						_0: {desktopTableWidth: 10, mobileTableWidth: 0, headingText: 'Payee'},
 						_1: {
 							ctor: '::',
-							_0: 'Category',
+							_0: {desktopTableWidth: 10, mobileTableWidth: 0, headingText: 'Category'},
 							_1: {
 								ctor: '::',
-								_0: 'Inflow',
+								_0: {desktopTableWidth: 10, mobileTableWidth: 0, headingText: 'Inflow'},
 								_1: {
 									ctor: '::',
-									_0: 'Outflow',
+									_0: {desktopTableWidth: 10, mobileTableWidth: 25, headingText: 'Outflow'},
 									_1: {
 										ctor: '::',
-										_0: 'Balance',
-										_1: {ctor: '[]'}
+										_0: {desktopTableWidth: 10, mobileTableWidth: 0, headingText: 'Balance'},
+										_1: {
+											ctor: '::',
+											_0: {desktopTableWidth: 20, mobileTableWidth: 25, headingText: ''},
+											_1: {ctor: '[]'}
+										}
 									}
 								}
 							}
