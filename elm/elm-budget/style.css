@@ -976,68 +976,6 @@ there.
 /* Larger than tablet */
 /* Larger than desktop */
 /* Larger than Desktop HD */
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-/* Hide default HTML checkbox */
-.switch input {
-  display: none;
-}
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-input:checked + .slider {
-  background-color: #2196F3;
-}
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-.slider.round:before {
-  border-radius: 50%;
-}
-.switch-row {
-  margin-top: 10px;
-}
-.switch-row .switch {
-  float: right;
-}
-.switch-label {
-  float: left;
-  font-weight: bold;
-}
 table tr > td {
   padding-bottom: 5px;
   height: 30px;
@@ -1049,7 +987,6 @@ table tr th {
 }
 button {
   margin-right: 5px;
-  margin-left: 2px;
   min-width: 80px;
 }
 table {
@@ -1067,9 +1004,6 @@ th {
   td,
   th {
     padding: 2px 2px;
-  }
-  button {
-    min-width: 40px;
   }
 }
 tr > td:last-of-type button,
@@ -1241,8 +1175,7 @@ fieldset {
 }
 .inflow,
 .outflow,
-.balance,
-.flow {
+.balance {
   text-align: right;
 }
 .loader-content {
@@ -1308,4 +1241,23 @@ select {
 .account-latest-balance span {
   font-weight: bold;
   color: grey;
+}
+.intro .hero {
+  width: 100%;
+  border: none;
+  margin-bottom: 20px;
+}
+.intro .screenshot1 img {
+  width: 100%;
+  max-width: 420px;
+  border: 1px black solid;
+  display: block;
+  margin: 0 auto;
+}
+.intro .screenshot1 figcaption {
+  display: block;
+  margin: 0 auto;
+  max-width: 420px;
+  width: 100%;
+  font-weight: bold;
 }
