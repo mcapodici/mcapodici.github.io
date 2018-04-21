@@ -1005,6 +1005,9 @@ th {
   th {
     padding: 2px 2px;
   }
+  button {
+    min-width: 40px;
+  }
 }
 tr > td:last-of-type button,
 itr > td:last-of-type nput[type="submit"],
@@ -1260,4 +1263,7 @@ select {
   max-width: 420px;
   width: 100%;
   font-weight: bold;
+}
+.logo {
+  max-width: 100%;
 }
