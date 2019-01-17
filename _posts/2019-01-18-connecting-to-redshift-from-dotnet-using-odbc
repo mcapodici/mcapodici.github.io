@@ -1,0 +1,72 @@
+---
+layout: post
+title: Connecting to Redshift from .NET using ODBC
+date: 2019-01-18 10:28:00
+tags: [dotnet]
+---
+
+
+There isn't much hand holding documentation on this, so I am posting it incase anyone needs it.
+
+1. Install the 32 bit ODBC driver. 
+
+   **Warning:** The 64 bit one may have issues - I had [this](https://stackoverflow.com/questions/41036794/data-source-name-not-found-and-no-default-driver-specified-using-amazon-redshif) problem.
+
+2. In Visual Studio, create a new console app.
+
+3. Use an app.config like this, replacing {SET AS APPROPRIATE} with your connection/credentials.
+
+```XML
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" />
+    </startup>
+  <appSettings>
+  </appSettings>
+  <connectionStrings>
+    <add name="Conn" providerName="System.Data.ODBC" connectionString="Driver={Amazon Redshift (x86)}; Server={SET AS APPROPRIATE}.redshift.amazonaws.com; Database={SET AS APPROPRIATE}; User={SET AS APPROPRIATE}; Password={SET AS APPROPRIATE}; Port=5439" />
+  </connectionStrings>  
+</configuration>
+```
+
+4. Create a program like this, changing the query schema.table to a table that exists in your database and id to the column
+
+```C#
+using System;
+using System.Configuration;
+using System.Data.Common;
+
+namespace RedshiftConnect
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (var connection = MakeConnection())
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = @"SELECT top 1 id FROM schema.table";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine((DateTime)reader["id"]);
+                    }
+                }
+            }
+            Console.ReadKey();
+        }
+
+        static readonly ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings["Conn"];
+        static DbConnection MakeConnection()
+        {
+            var factory = DbProviderFactories.GetFactory(connectionStringSettings.ProviderName);
+            var connection = factory.CreateConnection();
+            connection.ConnectionString = connectionStringSettings.ConnectionString;
+            connection.Open();
+            return connection;
+        }
+    }
+}
+```
